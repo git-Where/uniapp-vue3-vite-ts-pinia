@@ -8,7 +8,6 @@ console.log(a,c)
 
 const numbers = [10, 5, 8, 3, 12];
 const maxNumber = numbers.reduce((max, curr) => {
-  console.log(max)
   return Math.max(max, curr)
 }, Number.MIN_SAFE_INTEGER);
 console.log(Number.MAX_SAFE_INTEGER); // 12
