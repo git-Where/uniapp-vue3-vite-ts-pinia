@@ -1,0 +1,156 @@
+export const betweenArray = (start, end) => {
+  let result = [];
+  for (let i = start; i <= end; i++) {
+    result.push(i);
+  }
+  return result;
+}
+
+// 获取当前月份的天数
+export const getDaysInMonth = (year, month) => {
+  month = month - 1; // 月份从0开始，要减1
+  let date = new Date(year, month);
+  date.setMonth(date.getMonth() + 1); // 设置为下个月的第一天
+  date.setDate(date.getDate() - 1); // 减去1天，即为当前月份的天数
+  return date.getDate();
+}
+
+// 时间戳转时间
+export const timestampToTime = (timestamp,type) => {
+  // 假设时间戳为1598457600000
+  // let timestamp = 1598457600000;
+
+  // 使用Date对象将时间戳转换为时间
+  let date = new Date(timestamp);
+
+  // 获取年份
+  let year = date.getFullYear();
+
+  // 获取月份（注意月份是从0开始计数的，所以需要加1）
+  let month = date.getMonth() + 1;
+
+  // 获取日期
+  let day = date.getDate();
+
+  // 获取小时
+  let hour = date.getHours();
+
+  // 获取分钟
+  let minute = date.getMinutes();
+
+  // 获取秒钟
+  let second = date.getSeconds();
+
+  // 将时间拼接成字符串
+  let time = ''
+  if(type === '1'){
+    time = year + '年' + month + '月' + day + '日'
+  }else{
+    time = year + type + month + type + day + ' ' + hour + ':' + minute + ':' + second;
+  }
+  return time
+}
+
+
+/**
+ * 计算两个地点坐标之间的间距
+ * @param {array} location1 [lon: string, lat: string] 地点坐标
+ * @param {array} location2 [lon: string, lat: string] 地点坐标
+ */
+export const calculateDistance = (location1, location2) =>{
+	const earthRadius = 6371 // 地球半径，单位为千米
+
+	function toRadians(degrees) {
+		return degrees * (Math.PI / 180)
+	}
+
+	// 将经纬度转换为弧度
+	const radLat1 = toRadians(location1[1])
+	const radLon1 = toRadians(location1[0])
+	const radLat2 = toRadians(location2[1])
+	const radLon2 = toRadians(location2[0])
+
+	// 计算经纬度差值（弧度）
+	const diffLat = radLat2 - radLat1
+	const diffLon = radLon2 - radLon1
+
+	// 应用 Haversine 公式计算距离
+	const a =
+		Math.sin(diffLat / 2) * Math.sin(diffLat / 2) +
+		Math.cos(radLat1) * Math.cos(radLat2) * Math.sin(diffLon / 2) * Math.sin(diffLon / 2)
+	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+	return earthRadius * c * 1000 // 换成米
+}
+
+// 获取用户信息
+export const systemInfos = uni.getStorageSync('userInfo') || {};
+
+
+// 2023-06-03T00:00:00 转时间格式
+function formatTen(num) {
+  return num > 9 ? (num + "") : ("0" + num);
+}
+export const formatDate = (dateTime) => {
+  const date = new Date(dateTime)
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  const second = date.getSeconds();
+  return year + "-" + formatTen(month) + "-" + formatTen(day)+ " " +formatTen(hour)+ ":" +formatTen(minute)+ ":" +formatTen(second);
+}
+
+// 判断当前日期是否在某个日期段
+export const isDateInRange = (startDateStr, endDateStr) => {
+  var currentDate = new Date(); // 获取当前日期
+
+  var startDate = new Date(startDateStr); // 将起始日期字符串转换为 Date 对象
+  var endDate = new Date(endDateStr); // 将结束日期字符串转换为 Date 对象
+
+  return (currentDate >= startDate && currentDate <= endDate); // 返回布尔值表示当前日期是否在指定范围内
+}
+
+ //Uint8ClampedArray 转bae64图片格式
+const toBase64 = [
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+  'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+  'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+  'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
+]
+export const uintbase64 = (src)=> {
+  let dstLen = Math.ceil(src.length * 4 / 3);
+  let dst = new Array(dstLen);
+  let pos = 0;
+  let dstIndex = 0;
+  let nextLeft = 0;
+  src.forEach( b => {
+      let r = 0;
+      if (pos == 0) {
+          r = b >> 2;
+          dst[dstIndex++] = toBase64[nextLeft + r];
+          nextLeft = (b & 0x03) << 4;
+      } else if (pos == 1) {
+          r = b >> 4;
+          dst[dstIndex++] = toBase64[nextLeft + r];
+          nextLeft = (b & 0x0F) << 2;
+      } else if (pos == 2) {
+          r = b >> 6;
+          dst[dstIndex++] = toBase64[nextLeft + r];
+          dst[dstIndex++] = toBase64[b & 0x3F];
+          nextLeft = 0;
+      }
+
+      pos++;
+      if (pos == 3) {
+          pos = 0;
+      }
+  });
+
+  if (pos != 0) {
+      dst[dstIndex] = toBase64[nextLeft];
+  }
+
+  return dst.join('');
+}

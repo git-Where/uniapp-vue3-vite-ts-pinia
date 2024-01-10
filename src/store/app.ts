@@ -1,3 +1,5 @@
+import { getUserInfo } from "@/api";
+
 export default defineStore({
   id: 'app',
   state: () => {
@@ -8,11 +10,12 @@ export default defineStore({
     };
   },
   actions: {
-    getSystemInfo(): UniApp.GetSystemInfoResult {
-      if (Object.keys(this.systemInfo).length) return this.systemInfo;
-      const systemInfo = uni.getSystemInfoSync();
-      Object.assign(this.systemInfo, systemInfo);
-      return systemInfo;
+    async getSystemInfo() {
+      // if (Object.keys(this.systemInfo).length) return this.systemInfo;
+      // const systemInfo:any = await getUserInfo()
+      // this.systemInfo = systemInfo && JSON.parse(systemInfo);
+      // console.log('this.systemInfo:',this.systemInfo)
+      // return systemInfo;
     }
   }
 });

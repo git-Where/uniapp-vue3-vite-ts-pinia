@@ -1,0 +1,114 @@
+<template>
+  <Popup ref="popupRef" :title="'周数'" @change="Change">
+    <template #default>
+      <div class="week-popup-box">
+        <u-radio-group
+          v-model="radiovalue"
+          inactiveColor="#BFBFBF"
+          activeColor="#367CFE"
+          placement="row"
+          @change="groupChange"
+        >
+          <u-radio
+            :customStyle="{marginBottom: '8px',padding:'0 30rpx'}"
+            v-for="(item, index) in radiolist"
+            :key="index"
+            :label="item.name"
+            :name="item.name"
+            @change="radioChange"
+          >
+          </u-radio>
+        </u-radio-group>
+      </div>
+      <div class="week-popup-con clearfix">
+        <div class="week-popup-con-item" :class="{active:item.active}" v-for="item in weekNums" :key="item.value" @click="numChange(item)">{{item.value}}</div>
+      </div>
+    </template>
+  </Popup>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import Popup from '@/components/Popup/index.vue'
+const popupRef = ref()
+
+const emit = defineEmits(['change'])
+const radiovalue = ref('单周');
+// 基本案列数据
+const radiolist = ref([
+  {
+    name: '单周',
+    disabled: false,
+  },
+  {
+    name: '双周',
+    disabled: false,
+  },
+  {
+    name: '全选',
+    disabled: false,
+  },
+]);
+const weekNums = ref([{
+  value:1,
+  active:false
+},{
+  value:2,
+  active:false
+},{
+  value:3,
+  active:true
+}])
+const groupChange = (n) => {
+  console.log('groupChange', n);
+};
+
+const radioChange = (n) => {
+  console.log('radioChange', n);
+};
+
+const Change = (val) => {
+  emit('change',val)
+  popupRef.value.cancel()
+}
+const numChange = (val) => {
+
+}
+const open = () => {
+  popupRef.value.open('bottom')
+}
+defineExpose({
+  open
+})
+</script>
+
+<style lang="scss">
+.week-popup-box {
+  display: inline-block;
+  margin: 30rpx 0;
+}
+.week-popup-box .u-radio-row {
+  justify-content: center !important;
+}
+.week-popup-con {
+  .week-popup-con-item {
+    float: left;
+    box-sizing: border-box;
+    margin: 15rpx;
+    border: 1rpx solid #efefef;
+    border-radius: 10rpx;
+    width: 110rpx;
+    height: 78rpx;
+    background: #fff;
+    line-height: 78rpx;
+    text-align: center;
+    font-size: 32rpx;
+    color: #333;
+    &.active {
+      border: 1rpx solid #367cfe;
+      background: #367cfe;
+      color: #fff;
+    }
+  }
+}
+</style>

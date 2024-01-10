@@ -1,17 +1,53 @@
 {
+  "easycom": {
+    "autoscan": true,
+		"custom": {
+			"^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+			"^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue",
+			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
+		}
+	},
   "pages": [
     {
       "name": "index",
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "首页"
+        "navigationBarTitleText": "首页",
+        "navigationStyle":"custom"
       }
     },
     {
-      "name": "profile",
-      "path": "pages/profile/profile",
+      "name": "schedule",
+      "path": "pages/schedule/index",
       "style": {
-        "navigationBarTitleText": "个人"
+        "navigationBarTitleText": "课程表"
+      }
+    },
+    {
+      "name": "user",
+      "path": "pages/user/index",
+      "style": {
+        "navigationBarTitleText": "个人中心",
+        "navigationStyle":"custom"
+      }
+    },
+    {
+      "name": "login",
+      "path": "pages/login/index",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "navigationStyle":"custom"
+      }
+    },
+    {
+      "name": "signature",
+      "path": "pages/signature/index",
+      "style": {
+        "navigationBarTitleText": "采集签名",
+				"pageOrientation": "landscape",
+				"enablePullDownRefresh": false,
+				"disableScroll": true
       }
     }
   ],
@@ -27,28 +63,165 @@
           }
         }
       ]
+    },{
+      "root": "userPages",
+      "pages": [
+        {
+          "name": "myNews",
+          "path": "myNews/index",
+          "style": {
+            "navigationBarTitleText": "我的消息"
+          }
+        },{
+          "name": "personInfo",
+          "path": "personInfo/index",
+          "style": {
+            "navigationBarTitleText": "完善个人信息"
+          }
+        }
+      ]
+    },{
+      "root": "indexPages",
+      "pages": [
+        {
+          "name": "makeApprove",
+          "path": "makeApprove/index",
+          "style": {
+            "navigationBarTitleText": "预约审批"
+          }
+        },
+        {
+          "name": "labCondition",
+          "path": "labCondition/index",
+          "style": {
+            "navigationBarTitleText": "实验室运行状态"
+          }
+        },
+        {
+          "name": "classSchedule",
+          "path": "classSchedule/index",
+          "style": {
+            "navigationBarTitleText": "课表联动场景"
+          }
+        },
+        {
+          "name": "myInvite",
+          "path": "myInvite/index",
+          "style": {
+            "navigationBarTitleText": "我的邀约",
+            "navigationStyle":"custom"
+          }
+        },
+        {
+          "name": "labMakeAppoint",
+          "path": "labMakeAppoint/index",
+          "style": {
+            "navigationBarTitleText": "实验室预约"
+          }
+        },
+        {
+          "name": "labInvite",
+          "path": "labInvite/index",
+          "style": {
+            "navigationBarTitleText": "实验室预约",
+            "navigationStyle":"custom"
+          }
+        },
+        {
+          "name": "labInspectRecord",
+          "path": "labInspectRecord/index",
+          "style": {
+            "navigationBarTitleText": "实验室巡检记录"
+          }
+        },
+        {
+          "name": "officeSignRecords",
+          "path": "officeSignRecords/index",
+          "style": {
+            "navigationBarTitleText": "办公室签到记录"
+          }
+        },
+        {
+          "name": "monthlyReport",
+          "path": "monthlyReport/index",
+          "style": {
+            "navigationBarTitleText": "值班月报表"
+          }
+        },
+        {
+          "name": "overtimeApproval",
+          "path": "overtimeApproval/index",
+          "style": {
+            "navigationBarTitleText": "加班任务审批"
+          }
+        },
+        {
+          "name": "addTask",
+          "path": "addTask/index",
+          "style": {
+            "navigationBarTitleText": "新增加班任务"
+          }
+        },
+        {
+          "name": "labDutyRecord",
+          "path": "labDutyRecord/index",
+          "style": {
+            "navigationBarTitleText": "实验室值班任务"
+          },
+          "permission": {
+            "scope.userLocation": {
+              "desc": "你的位置信息将用于小程序位置接口的效果展示"
+            }
+          }
+        },
+        {
+          "name": "officeDuty",
+          "path": "officeDuty/index",
+          "style": {
+            "navigationBarTitleText": "办公室值班任务"
+          }
+        },
+        {
+          "name": "myCourse",
+          "path": "myCourse/index",
+          "style": {
+            "navigationBarTitleText": "我的课程"
+          }
+        }
+      ]
     }
   ],
   "globalStyle": {
-    "navigationBarTextStyle": "black",
+    "navigationBarTextStyle": "white",
     "navigationBarTitleText": "uni-app",
-    "navigationBarBackgroundColor": "#1AA86C",
+    "navigationBarBackgroundColor": "#3D94EF",
+    "navigationStyle": "default",
     "backgroundColor": "#F8F8F8"
   },
   "tabBar": {
-    "color": "#1AA86C",
-    "selectedColor": "#1AA86C",
+    "color": "#666",
+    "selectedColor": "#0F87FB",
     "borderStyle": "white",
     "backgroundColor": "#ffffff",
+    "fontSize": "12px",
     "list": [
       {
         "pagePath": "pages/index/index",
+        "iconPath": "static/tabIcon/index.png",
+			  "selectedIconPath": "static/tabIcon/index-active.png",
         "text": "首页"
       },
       {
-        "pagePath": "pages/profile/profile",
-        "text": "个人"
+        "pagePath": "pages/schedule/index",
+        "iconPath": "static/tabIcon/schedule.png",
+			  "selectedIconPath": "static/tabIcon/schedule-active.png",
+        "text": "课程表"
+      },
+      {
+        "pagePath": "pages/user/index",
+        "iconPath": "static/tabIcon/user.png",
+			  "selectedIconPath": "static/tabIcon/user-active.png",
+        "text": "个人中心"
       }
     ]
-  }
-}
+  }}

@@ -16,6 +16,11 @@ export default defineConfig({
       '@': resolve(__dirname, 'src')
     }
   },
+  build: {
+    sourcemap: false, // App，小程序端源码调试，需要在 vite.config.js 中主动开启 sourcemap
+    rollupOptions: {
+    }
+  },
   plugins: [
     AutoImportTypes(),
     PiniaAutoRefs(),

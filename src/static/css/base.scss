@@ -81,3 +81,54 @@ checkbox {
     transform: rotate(360deg);
   }
 }
+/* start--清除浮动--start */
+.clearfix {
+  zoom: 1;
+}
+.clearfix::after {
+  display: block;
+  visibility: hidden;
+  clear: both;
+  height: 0;
+  content: '';
+}
+/* end--清除浮动--end */
+/* start--文本行数限制--start */
+.h-line-1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.h-line-2 {
+  -webkit-line-clamp: 2;
+}
+.h-line-3 {
+  -webkit-line-clamp: 3;
+}
+.h-line-4 {
+  -webkit-line-clamp: 4;
+}
+.h-line-5 {
+  -webkit-line-clamp: 5;
+}
+.h-line-2,
+.h-line-3,
+.h-line-4,
+.h-line-5 {
+  // display: box; // 弹性伸缩盒
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  -webkit-box-orient: vertical; // 设置伸缩盒子元素排列方式
+}
+/* end--文本行数限制--end */
+/**  加载更多  **/
+.load-more {
+  display: block;
+  margin: 20rpx auto;
+  padding-bottom: 20rpx;
+  text-align: center;
+  font-size: 32rpx;
+  color: #666;
+}

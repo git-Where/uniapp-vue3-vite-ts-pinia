@@ -1,6 +1,6 @@
 {
-    "name" : "",
-    "appid" : "",
+    "name" : "福大经管实验教学管理平台",
+    "appid" : "wxd180602a078f0f39",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -50,11 +50,17 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "requiredPrivateInfos":["getLocation","chooseLocation"],
+        "appid" : "wxd180602a078f0f39",
         "setting" : {
             "urlCheck" : false
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+        "permission":{
+          "scope.userLocation":{
+            "desc": "获取巡检位置"
+          }
+        }
     },
     "mp-alipay" : {
         "usingComponents" : true

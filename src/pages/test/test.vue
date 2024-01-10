@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import apiTest from '@/api/apiTest';
+// import apiTest from '@/api/apiTest';
 import { getCommonParams, setCommonParams } from '@/config/commonParams';
 import { useInit } from '@/hooks/useInit';
 import { useTitle } from '@/hooks/useTitle';
@@ -16,22 +16,22 @@ const { title, changeTitle } = useTitle();
 const { name, fullName, updateName } = useStore('test');
 
 async function getTest() {
-  const getTest = await apiTest.getTest({ a: 1 });
-  if (!getTest) {
-    uni.showToast({
-      title: '自定义异常处理'
-    });
-    return;
-  }
-  // getTest.data?.age
-  // getTest.data?.name
-  console.log(getTest, 'getTest');
+  // const getTest = await apiTest.getTest({ a: 1 });
+  // if (!getTest) {
+  //   uni.showToast({
+  //     title: '自定义异常处理'
+  //   });
+  //   return;
+  // }
+  // // getTest.data?.age
+  // // getTest.data?.name
+  // console.log(getTest, 'getTest');
 }
 async function postTest() {
-  const postTest = await apiTest.postTest({ a: 1 });
-  if (!postTest) return;
+  // const postTest = await apiTest.postTest({ a: 1 });
+  // if (!postTest) return;
   // postTest.data?.val
-  console.log(postTest, 'postTest');
+  // console.log(postTest, 'postTest');
 }
 
 function getCommonParam() {

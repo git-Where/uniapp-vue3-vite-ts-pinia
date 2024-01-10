@@ -1,11 +1,13 @@
-import { isDevelopment, isH5 } from './platform';
 import { forward } from './router';
 import { getCommonParams } from '@/config/commonParams';
 import env from '@/config/env';
 import { hideLoading, showLoading } from '@/config/serviceLoading';
+import { Decrypt, Encrypt } from './secret';
+import { BaseUrl } from '@/config/app';
+import { API } from '@/api/login';
 
 function reject(err: { errno: number; errmsg: string }) {
-  const { errmsg = '抢购火爆，稍候片刻！', errno = -1 } = err;
+  const { errmsg = '网络不给力，请检查你的网络设置~', errno = -1 } = err;
   switch (errno) {
     case 10000:
       // 特殊异常处理
@@ -14,6 +16,7 @@ function reject(err: { errno: number; errmsg: string }) {
 
     default:
       uni.showToast({
+        icon:'none',
         title: errmsg
       });
       break;
@@ -21,7 +24,8 @@ function reject(err: { errno: number; errmsg: string }) {
 }
 
 // h5环境开启代理
-const apiBaseUrl = isH5 && isDevelopment ? '/api' : env.apiBaseUrl;
+const apiBaseUrl = BaseUrl;
+const header = {}
 
 function baseRequest(
   method:
@@ -35,47 +39,58 @@ function baseRequest(
     | 'CONNECT'
     | undefined,
   url: string,
-  data: { isLoading: any }
+  data: {}
 ) {
+  showLoading(true);
+  console.log('token',uni.getStorageSync('token'))
+  const token = uni.getStorageSync('token') || '';
+  if(!token && url !== API.LOGIN){
+    return uni.reLaunch({
+      url:'/pages/login/index'
+    })
+  }
   return new Promise((resolve) => {
-    showLoading(data.isLoading);
-    delete data.isLoading;
-    let responseDate: unknown;
+    console.log('请求的参数数据：',data)
+    let _data:any = Object.keys(data).length > 0 ? {
+      DataStr: Encrypt(JSON.stringify(data))
+    } : {}
+    // 数据加密
+    if(method == 'GET'){
+      _data=data || {}
+    }
+    const contentType = method === 'GET'
+    ? 'application/json; charset=utf-8'
+    : 'application/x-www-form-urlencoded'
+    header['content-type'] = contentType
+    header['Authorization'] = `Basic ${token}`
     uni.request({
       url: apiBaseUrl + url,
       method,
       timeout: 20000,
-      header: {
-        'content-type':
-          method === 'GET'
-            ? 'application/json; charset=utf-8'
-            : 'application/x-www-form-urlencoded'
-      },
-      data,
+      header: header,
+      data:_data,
       success: (res: any) => {
-        if (res.statusCode >= 200 && res.statusCode < 400) {
-          if (res.data.errno === 0) {
-            responseDate = res.data;
-          } else {
-            reject(res.data);
-          }
-        } else {
+        if(res.data.IsSuccess){
+          const resData = res.data.SuccessData ? JSON.parse(Decrypt(res.data.SuccessData)) : ''
+          console.log(`${url}请求返回数据：`,resData)
+          resolve(resData);
+        }else{
           reject({
             errno: -1,
-            errmsg: '抢购火爆，稍候片刻！'
+            errmsg: res.data.ErrorMessage
           });
         }
       },
       fail: () => {
+        hideLoading();
         reject({
           errno: -1,
           errmsg: '网络不给力，请检查你的网络设置~'
         });
       },
       complete: (data) => {
-        console.log(data, 'data');
-        resolve(responseDate);
         hideLoading();
+        console.log(data, '请求complete');
       }
     });
   });
@@ -84,12 +99,12 @@ function baseRequest(
 const http = {
   get: <T>(api: string, params: any) =>
     baseRequest('GET', api, {
-      ...getCommonParams(),
+      // ...getCommonParams(),
       ...params
     }) as Http.Response<T>,
   post: <T>(api: string, params: any) =>
     baseRequest('POST', api, {
-      ...getCommonParams(),
+      // ...getCommonParams(),
       ...params
     }) as Http.Response<T>
 };
