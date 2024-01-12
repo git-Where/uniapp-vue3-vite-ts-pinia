@@ -36,7 +36,7 @@
           <u--input v-model="formData.Phone" placeholder="请输入联系电话" border="none"/>
         </u-form-item>
         <u-form-item label="指导老师" required prop="Teacher" borderBottom
-          @click="teachClick">
+          @click="popupTeachRef.open('bottom')">
           <u--input
             v-model="formData.Teacher"
             disabled
@@ -59,12 +59,12 @@
         <u-form-item
           label="实验室"
           required
-          prop="Laboratory"
+          prop="LaboratoryName"
           borderBottom
-          @click="labClick"
+          @click="popupLabRef.open('bottom')"
         >
           <u--input
-            v-model="formData.Laboratory"
+            v-model="formData.LaboratoryName"
             disabled
             disabledColor="#ffffff"
             placeholder="请选择实验室"
@@ -113,21 +113,21 @@
     <img class="invite-btn" :src="InviteSubmit" @click="submit" />
     <u-picker
       :show="show"
-      :columns="columns"
+      :columns="[activityList]"
       :defaultIndex="defaultIndex"
       :close-on-click-overlay="true"
-      :key-name="keyName"
+      keyName="Key"
       :showToolbar="true"
       @close="show = false"
       @cancel="show = false"
       @confirm="confirm"
     />
   </div>
-  <Popup ref="popupRef" @change="popupChange">
+  <Popup ref="popupTeachRef" @change="popupTeachChange">
     <template #default>
       <div class="popup-box">
         <u-checkbox-group
-            v-model="teacherId"
+            v-model="formData.TeacherId"
             placement="column"
         >
             <u-checkbox
@@ -143,7 +143,27 @@
       </div>
     </template>
   </Popup>
-  <AppointTime ref="appTimeRef" v-model="modelTimeValue" />
+  <Popup ref="popupLabRef" @change="popupLabChange">
+    <template #default>
+      <div class="popup-box">
+        <u-checkbox-group
+            v-model="formData.Laboratory"
+            placement="column"
+        >
+            <u-checkbox
+              :customStyle="{paddingBottom: '12px'}"
+              activeColor="#2D9EFE"
+              v-for="(item, index) in labList"
+              :key="index"
+              :label="item.Name"
+              :name="item.Id"
+            >
+            </u-checkbox>
+        </u-checkbox-group>
+      </div>
+    </template>
+  </Popup>
+  <AppointTime ref="appTimeRef" :model-value="modelTimeValue" @update:model-value="updateModelValue"/>
 </template>
 
 <script setup lang="ts">
@@ -153,7 +173,8 @@ import { ref } from "vue";
 import AppointTime from './components/AppointmentTime/index.vue'
 import { getTeacherList,getDict, getLabAll, addBusinessActivity, addBusinessBatch } from '@/api';
 
-const popupRef = ref()
+const popupTeachRef = ref()
+const popupLabRef = ref()
 const form = ref()
 const show = ref(false);
 const formData = ref({
@@ -166,7 +187,8 @@ const formData = ref({
   Titile:'',
   Type:'',
   TypeName:'',
-  Laboratory:''
+  LaboratoryName:'',
+  Laboratory:[]
 });
 const rules = {
   "Titile": {
@@ -199,7 +221,7 @@ const rules = {
     message: "请输入活动人数",
     trigger: ["blur", "change"],
   },
-  "Laboratory": {
+  "LaboratoryName": {
     type: "string",
     required: true,
     message: "请选择实验室",
@@ -207,13 +229,10 @@ const rules = {
   },
 }
 
-const teachList = ref()
 const activityList = ref()
-const labList = ref()
-const columns = ref()
-const keyName = ref()
 const defaultIndex = ref([0])
-const teacherId = ref([])
+const labList = ref()
+const teachList = ref()
 
 onShow(()=>{
   getTeachs()
@@ -238,46 +257,36 @@ const getLabList = async () => {
 }
 
 const activityClick = () => {
-  columns.value = [activityList.value]
-  keyName.value = 'Key'
-  const index = activityList.value.findIndex((item)=>item.Key === formData.value.Type) || 0
-  defaultIndex.value = [index>0?index:0]
-  show.value = true
-}
-const labClick = () => {
-  columns.value = [labList.value]
-  keyName.value = 'Name'
-  const index = labList.value.findIndex((item)=>item.Name === formData.value.Laboratory) || 0
+  const index = activityList.value.findIndex((item)=>item.Value === formData.value.Type) || 0
   defaultIndex.value = [index>0?index:0]
   show.value = true
 }
 const confirm = (e) => {
-  if(keyName.value === 'Name'){
-    formData.value.Laboratory = e.value[0].Name
-  }
-  if(keyName.value === 'Key'){
-    formData.value.Type = e.value[0].Value
-    formData.value.TypeName = e.value[0].Key
-  }
+  formData.value.Type = e.value[0].Value
+  formData.value.TypeName = e.value[0].Key
   show.value = false
 }
 
-const teachClick = () => {
-  teacherId.value = formData.value.TeacherId
-  popupRef.value.open('bottom')
-}
-
-const popupChange = async () => {
-  formData.value.TeacherId = teacherId.value
-  formData.value.Teacher = teacherId.value?.reduce((pre:any, cur:any)=>{
+const popupTeachChange = async () => {
+  formData.value.Teacher = formData.value.TeacherId?.reduce((pre:any, cur:any)=>{
      pre.push(teachList.value.find((n)=>n.Id === cur).NickName)
      return pre
   },[]).join()
-  popupRef.value.cancel()
+  popupTeachRef.value.cancel()
+}
+
+const popupLabChange = () => {
+  formData.value.LaboratoryName = formData.value.Laboratory?.reduce((pre:any, cur:any)=>{
+     pre.push(labList.value.find((n)=>n.Id === cur).Name)
+     return pre
+  },[]).join()
+  popupLabRef.value.cancel()
 }
 
 
 const submit = async() => {
+  dealDateFormatter()
+  return false
   await form.value.validate()
   formData.value.TeacherId = formData.value.TeacherId.join() as any
   const res = await addBusinessActivity(formData.value)
@@ -288,16 +297,32 @@ const submit = async() => {
   await addBusinessBatch(params)
 }
 
+const dealDateFormatter = () => {
+  const dayMap = {}
+  timeList.value.forEach((item)=>{
+    const day = item.split(' ')[0]
+    const dayTime = item.split(' ')[1]
+    dayMap[day] = dayMap?.[day]?.length === 0 ? [] : dayMap[day]
+    dayMap[day].push(dayTime)
+  })
+  console.log('dayMap',dayMap)
+}
+
 const appTimeRef = ref()
-const timeList = ref(['2023-11-11 01:00-12:00'])
+const timeList = ref(['2023-11-11 01-12'])
 const modelTimeValue = ref('')
-watch(()=>modelTimeValue,(newVal:any)=>{
-  if(!newVal.value) return
-  timeList.value.push(newVal.value)
-},{
-  immediate:false,
-  deep:true
-})
+const updateModelValue = (value) => {
+  console.log(333334443,value)
+  if(!value) return
+  timeList.value.push(value)
+}
+// watch(()=>modelTimeValue,(newVal:any)=>{
+//   if(!newVal.value) return
+//   timeList.value.push(newVal.value)
+// },{
+//   immediate:false,
+//   deep:true
+// })
 const handleDelTime = (index) => {
   timeList.value.splice(index,1)
 }
