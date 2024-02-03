@@ -15,7 +15,6 @@
             :key="index"
             :label="item.name"
             :name="item.name"
-            @change="radioChange"
           >
           </u-radio>
         </u-radio-group>
@@ -30,49 +29,75 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import Popup from '@/components/Popup/index.vue'
+
+const props = defineProps({
+  modelValue:{
+    type:Number,
+    default:0
+  }
+})
+
 const popupRef = ref()
 
 const emit = defineEmits(['change'])
-const radiovalue = ref('单周');
+const radiovalue = ref();
 // 基本案列数据
 const radiolist = ref([
   {
     name: '单周',
-    disabled: false,
   },
   {
     name: '双周',
-    disabled: false,
   },
   {
     name: '全选',
-    disabled: false,
   },
 ]);
-const weekNums = ref([{
-  value:1,
-  active:false
+const weekNums = ref<any>([])
+
+watch(()=>props.modelValue,(val)=>{
+  if(val > 0){
+    weekNums.value = []
+    init(val)
+  }
 },{
-  value:2,
-  active:false
-},{
-  value:3,
-  active:true
-}])
-const groupChange = (n) => {
-  console.log('groupChange', n);
+  immediate:false
+})
+const init = (val) => {
+  for(let i = 1;i<=val;i++){
+    weekNums.value.push({
+      value:i,
+      active:false
+    })
+  }
+}
+
+const groupChange = (val) => {
+  for(let i = 0;i<weekNums.value.length;i++){
+    weekNums.value[i].active = false
+    if(val === '单周'){
+      if(i % 2 === 0){
+        weekNums.value[i].active = true
+      }
+    }
+    if(val === '双周'){
+      if(i % 2 !== 0){
+        weekNums.value[i].active = true
+      }
+    }
+    if(val === '全选'){
+      weekNums.value[i].active = true
+    }
+  }
 };
 
-const radioChange = (n) => {
-  console.log('radioChange', n);
-};
 
 const Change = (val) => {
   emit('change',val)
   popupRef.value.cancel()
 }
 const numChange = (val) => {
-
+  val.active = !val.active
 }
 const open = () => {
   popupRef.value.open('bottom')
@@ -97,7 +122,7 @@ defineExpose({
     margin: 15rpx;
     border: 1rpx solid #efefef;
     border-radius: 10rpx;
-    width: 110rpx;
+    width: 109rpx;
     height: 78rpx;
     background: #fff;
     line-height: 78rpx;

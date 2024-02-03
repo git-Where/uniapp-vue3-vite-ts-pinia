@@ -1,8 +1,8 @@
 <template>
   <view class="schedule-box">
-    <u-sticky bgColor="#fff">
+    <!-- <u-sticky bgColor="#fff">
       <Search />
-    </u-sticky>
+    </u-sticky> -->
     <Content />
   </view>
 </template>
@@ -10,6 +10,17 @@
 <script setup lang="ts">
 import Search from './components/Search/index.vue'
 import Content from './components/Content/index.vue'
+import {getDutyList} from '@/api'
+
+const list = ref()
+
+onShow(()=>{
+  init()
+})
+const init = async() => {
+  const res = await getDutyList()
+  list.value = res
+}
 </script>
 
 <style lang="scss">

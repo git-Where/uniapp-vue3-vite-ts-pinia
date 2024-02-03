@@ -2,20 +2,19 @@
   <div>
     <u--form
       labelPosition="left"
-      labelWidth="95"
       :model="formModel"
       :rules="rules"
       ref="form"
     >
       <div class="form-activity">
-        <u-form-item label="任务名称" prop="userInfo.name" :borderBottom="true">
+        <u-form-item label="任务名称" labelWidth="95" prop="userInfo.name" :borderBottom="true">
           <u--input
             v-model="formModel.userInfo.name"
             placeholder="请输入任务名称"
             border="none"
           ></u--input>
         </u-form-item>
-        <u-form-item label="任务内容" prop="userInfo.name" borderBottom>
+        <u-form-item label="任务内容" labelWidth="95" prop="userInfo.name" borderBottom>
           <u--input
             v-model="formModel.userInfo.name"
             placeholder="请输入任务内容"
@@ -24,6 +23,7 @@
         </u-form-item>
         <u-form-item
           label="值班学生"
+          labelWidth="95"
           required
           prop="userInfo.sex"
           borderBottom
@@ -43,7 +43,7 @@
             <u-icon name="arrow-right"></u-icon>
           </template>
         </u-form-item>
-        <u-form-item label="任务安排节次" prop="userInfo.name" borderBottom  @click="chooseSection">
+        <u-form-item label="任务安排节次" labelWidth="95" prop="userInfo.name" borderBottom  @click="chooseSection">
           <u--input
             v-model="formModel.userInfo.name"
             disabled
@@ -71,10 +71,10 @@
     :show="studentShow"
     :close-on-click-overlay="true"
     :columns="columns"
-    @cancel="close"
-    @close="close"
+    keyName="Name"
+    @cancel="studentShow = false"
+    @close="studentShow = false"
     @confirm="confirm"
-    @change="changeHandler"
   ></u-picker>
   <Popup ref="sectionRef" @change="popupClassChange">
     <template #default>
@@ -127,7 +127,7 @@
     </template>
   </Popup>
   <!-- <SemesterPopup ref="semesterRef" @change="semesterChange" /> -->
-  <WeeksPopup ref="weekRef" @change="weekChange" />
+  <WeeksPopup ref="weekRef" v-model="weekNum" @change="weekChange" />
   <HoursPopup ref="hoursRef" v-if="isHourShow" :is-show="isHourShow" @change="hourChange" @cancel="isHourShow = false" />
 </template>
 
@@ -138,6 +138,8 @@ import Popup from "@/components/Popup/index.vue";
 import SemesterPopup from "./component/SemesterPopup/index.vue";
 import WeeksPopup from "./component/WeeksPopup/index.vue";
 import HoursPopup from "./component/HoursPopup/index.vue";
+import { getSemesterAll } from '@/api';
+import { formatDate, getWeeks } from '@/utils/utils';
 
 const studentPopupRef = ref();
 const form = ref();
@@ -221,15 +223,43 @@ const popupClassChange = () => {
     });
 };
 
+onShow(async ()=>{
+  getSemester()
+})
+const getSemester = () => {
+  getSemesterAll().then(res=>{
+    columns.value = [res]
+  })
+}
+
+const studentShow = ref(false)
+const weekNum = ref()
 const semesterRef = ref();
 const semesterClick = () => {
   // semesterRef.value.open();
-  columns.value = [['2023年上','2023年下']]
   studentShow.value = true;
 
 };
 const semesterChange = (val) => {};
 
+const columns:any = ref([['学生1','学生2']]);
+const chooseLab = () => {
+  studentShow.value = true;
+};
+const confirm = (e) => {
+
+  studentShow.value = false;
+  console.log(1,e)
+  getWeekList(e.value[0])
+};
+const getWeekList = (val) => {
+  const beginTime = formatDate(val.Begin_Date).split(' ')[0]
+  const endTime = formatDate(val.End_Date).split(' ')[0]
+  const weeks = getWeeks(beginTime,endTime)+1
+  const current = getWeeks(beginTime,'2023-05-20')+1
+  weekNum.value = weeks
+  console.log('周数：',weeks,current)
+}
 
 const weekRef = ref();
 const weekClick = () => {
@@ -247,20 +277,6 @@ const hourChange = (val) => {
   isHourShow.value = false
 };
 
-const columns:any = ref([['学生1','学生2']]);
-const studentShow = ref(false)
-const chooseLab = () => {
-  studentShow.value = true;
-};
-const close = () => {
-  studentShow.value = false;
-};
-const confirm = () => {
-  studentShow.value = false;
-};
-const changeHandler = (e) => {
-  const { columnIndex, index, picker } = e;
-};
 </script>
 
 <style lang="scss">

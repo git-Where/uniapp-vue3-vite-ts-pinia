@@ -254,13 +254,13 @@ export const RoleList = {
           name:'我的课表',
           icon:Icon6,
           type:'tab',
-          url:'../schedule/index'
+          url:'../schedule/index?IsSearchMine=1'
         },
         {
           name:'实验室排课情况',
           icon:Icon7,
           type:'tab',
-          url:'../schedule/index'
+          url:'../schedule/index?IsSearchMine=0'
         }
       ]
     },

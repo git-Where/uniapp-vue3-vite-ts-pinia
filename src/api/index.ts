@@ -5,3 +5,4 @@ export * from './scene/index';
 export * from './dict/index';
 export * from './business/index';
 export * from './semester/index';
+export * from './task/index';

@@ -6,57 +6,29 @@
         <span class="lab-time-span">{{ timestampToTime(dataTime,'1') }}</span>
         <u-icon class="lab-time-down" name="arrow-down"></u-icon>
       </div>
-      <div class="labs-content-item">
+      <div class="labs-content-item" v-for="(item,index) in list" :key="index">
         <div class="labs-content-item-content">
           <div class="labs-content-title">
             <img class="labs-icon" :src="labTitleIcon" />
-            第一节
+            {{item.Begins}}
           </div>
           <div class="labs-content-con">
             <div class="labs-content-con-item">
               <span class="labs-content-con-label"> 巡检教室</span>
               <span class="labs-content-con-span"
-                >502</span
+                >{{item.Begins}}</span
               >
             </div>
             <div class="labs-content-con-item">
               <span class="labs-content-con-label">巡检人员</span>
               <span class="labs-content-con-span"
-                >林墨</span
+                >{{item.Executive}}</span
               >
             </div>
             <div class="labs-content-con-item">
               <span class="labs-content-con-label">巡检状态</span>
               <span class="labs-content-con-span">
-                8:01
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="labs-content-item">
-        <div class="labs-content-item-content">
-          <div class="labs-content-title">
-            <img class="labs-icon" :src="labTitleIcon" />
-            第一节
-          </div>
-          <div class="labs-content-con">
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label"> 巡检教室</span>
-              <span class="labs-content-con-span"
-                >502</span
-              >
-            </div>
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">巡检人员</span>
-              <span class="labs-content-con-span"
-                >林墨</span
-              >
-            </div>
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">巡检状态</span>
-              <span class="labs-content-con-span">
-                8:01
+                {{status[item.TaskStatus]}}
               </span>
             </div>
           </div>
@@ -80,20 +52,36 @@
 import {ref} from 'vue'
 import {labTitleIcon,labTimeIcon} from '@/static/icon'
 import {timestampToTime} from '@/utils/utils'
+import {getDutyList} from '@/api'
 
+const status = {
+  0:'未签到',
+  1:'已签到'
+}
 
 const show = ref(false);
 const dataTime = ref(Date.now());
+const list = ref()
 
+onShow(()=>{
+  init()
+})
+const init = async() => {
+  const res = await getDutyList(
+    {
+      SearchDate:timestampToTime(dataTime.value,'2')
+    }
+  )
+  list.value = res
+}
 const handleTime = () => {
   show.value = true
 }
 
 const confirm = (val) => {
   dataTime.value = val
-  console.log('val',val)
-
   show.value = false
+  init()
 }
 </script>
 

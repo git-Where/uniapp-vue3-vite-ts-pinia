@@ -19,59 +19,30 @@
         <span class="lab-time-span">{{ timestampToTime(dataTime,'1') }}</span>
         <u-icon class="lab-time-down" name="arrow-down"></u-icon>
       </div>
-      <div class="labs-content-item">
+      <div class="labs-content-item" v-for="(item,index) in formData" :key="index">
         <div class="labs-content-item-content">
           <div class="labs-content-title">
             <img class="labs-icon" :src="labTitleIcon" />
-            第一节
+            {{item.Begins}}
           </div>
           <div class="labs-content-con">
             <div class="labs-content-con-item">
               <span class="labs-content-con-label"> 巡检教室</span>
               <span class="labs-content-con-span"
-                >502</span
+                >{{item.Begins}}</span
               >
             </div>
             <div class="labs-content-con-item">
               <span class="labs-content-con-label">巡检人员</span>
               <span class="labs-content-con-span"
-                >林墨</span
+                >{{item.Executive}}</span
               >
             </div>
             <div class="labs-content-con-item">
               <span class="labs-content-con-label">巡检状态</span>
               <span class="labs-content-con-span">
-                8:01
-                <span class="labs-con-span-status">已巡检</span>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="labs-content-item">
-        <div class="labs-content-item-content">
-          <div class="labs-content-title">
-            <img class="labs-icon" :src="labTitleIcon" />
-            第一节
-          </div>
-          <div class="labs-content-con">
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label"> 巡检教室</span>
-              <span class="labs-content-con-span"
-                >502</span
-              >
-            </div>
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">巡检人员</span>
-              <span class="labs-content-con-span"
-                >林墨</span
-              >
-            </div>
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">巡检状态</span>
-              <span class="labs-content-con-span">
-                8:01
-                <span class="labs-con-span-status">已巡检</span>
+                {{item.ExecutionTime}}
+                <span class="labs-con-span-status">{{ item.TaskStatus === 0 ? '待巡检' : '已巡检' }}</span>
               </span>
             </div>
           </div>
@@ -95,26 +66,41 @@
 import {ref} from 'vue'
 import {labTitleIcon,labTimeIcon} from '@/static/icon'
 import {timestampToTime} from '@/utils/utils'
+import {getInspectionTask} from '@/api'
 const list = ref([
   {
     name: "课程开门巡检",
+    id:1
   },
   {
     name: "课后关门巡检",
+    id:2
   }
 ]);
-const show = ref(false);
+const formData = ref<any>({})
 const dataTime = ref(Date.now());
-const tabClick = (index,item) => {
-  console.log(index,item)
+const InspectionType = ref(1)
+onShow(()=>{
+  getList()
+})
+const getList = async () => {
+  const res = await getInspectionTask({
+    InspectionType:InspectionType.value,
+    SearchDate:timestampToTime(dataTime.value,'2')
+  })
+  formData.value = res
+}
+const show = ref(false);
+const tabClick = (item) => {
+  InspectionType.value = item.id
+  getList()
 }
 const handleTime = () => {
   show.value = true
 }
 const confirm = (val) => {
-  dataTime.value = val
-  console.log('val',val)
-
+  dataTime.value = val.value
+  getList()
   show.value = false
 }
 

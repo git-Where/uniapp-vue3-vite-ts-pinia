@@ -17,13 +17,13 @@
       'font-size': '28rpx',
       'padding':'0 5rpx'
     }"
-    :itemStyle="Object.assign({
+    :itemStyle="{
       padding:'0 25rpx 8rpx',
       width:'100rpx',
       textAlign:'center',
-      height: '96rpx'
-    },itemStyle)
-
+      height: '96rpx',
+      ...itemStyle
+    }
     "
     @click="tabClick"
   ></u-tabs>
@@ -36,27 +36,27 @@ const props = defineProps({
   tabList:{
     type: Array,
     default:()=>[
-      {
-        name: "11-10周一",
-      },
-      {
-        name: "11-10周二",
-      },
-      {
-        name: "11-10周三",
-      },
-      {
-        name: "11-10周四",
-      },
-      {
-        name: "11-10周五",
-      },
-      {
-        name: "11-10周六",
-      },
-      {
-        name: "11-10周日",
-      },
+      // {
+      //   name: "11-10周一",
+      // },
+      // {
+      //   name: "11-10周二",
+      // },
+      // {
+      //   name: "11-10周三",
+      // },
+      // {
+      //   name: "11-10周四",
+      // },
+      // {
+      //   name: "11-10周五",
+      // },
+      // {
+      //   name: "11-10周六",
+      // },
+      // {
+      //   name: "11-10周日",
+      // },
     ]
   },
   scrollable:{

@@ -54,7 +54,7 @@
             <div class="labs-content-con-item">
               <span class="labs-content-con-label">最近排课情况</span>
               <span class="labs-content-con-span">
-                {{item.Name}}
+                {{item.Date}} {{item.StartLesson}}{{item.EndLesson}} {{item.RoomCode}}
               </span>
             </div>
             <div class="labs-content-con-item">

@@ -23,7 +23,7 @@
           <div class="approve-content-con-item">
             <span class="approve-content-con-label">指导老师</span>
             <span class="approve-content-con-span"
-              >{{item.TeacherName}}</span
+              >{{item.Teacher}}</span
             >
           </div>
           <div class="approve-content-con-item">

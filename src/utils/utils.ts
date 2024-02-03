@@ -27,10 +27,10 @@ export const timestampToTime = (timestamp,type) => {
   let year = date.getFullYear();
 
   // 获取月份（注意月份是从0开始计数的，所以需要加1）
-  let month = date.getMonth() + 1;
+  let month = date.getMonth() + 1 < 10 ? '0'+(date.getMonth() + 1) : date.getMonth() + 1;
 
   // 获取日期
-  let day = date.getDate();
+  let day = date.getDate() < 10 ? '0'+date.getDate() : date.getDate();
 
   // 获取小时
   let hour = date.getHours();
@@ -45,6 +45,8 @@ export const timestampToTime = (timestamp,type) => {
   let time = ''
   if(type === '1'){
     time = year + '年' + month + '月' + day + '日'
+  }else if(type === '2'){
+    time = year + '-' + month + '-' + day
   }else{
     time = year + type + month + type + day + ' ' + hour + ':' + minute + ':' + second;
   }
@@ -153,4 +155,39 @@ export const uintbase64 = (src)=> {
   }
 
   return dst.join('');
+}
+
+
+// 通过起止时间获取周数
+export const getWeeks = (startDateStr, endDateStr) => {
+  var start = new Date(startDateStr); // 创建起始日期对象
+  var end = new Date(endDateStr); // 创建结束日期对象
+
+  var timeDiff = Math.abs(end - start); // 获取时间差（单位为毫秒）
+  var daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)); // 转换成天数并向上取整
+
+  return Math.floor(daysDiff / 7); // 返回周数
+}
+
+// 当前日期距离指定日期是第几周
+export const getWeekNumber = (dateString) => {
+  var date = new Date(dateString); // 创建指定日期的Date对象
+
+  // 获取当前日期的年份、月份和日期
+  var currentYear = new Date().getFullYear();
+  var currentMonth = new Date().getMonth() + 1;
+  var currentDayOfMonth = new Date().getDate();
+
+  // 设置当前日期为指定日期
+  date.setFullYear(currentYear);
+  date.setMonth(currentMonth - 1);
+  date.setDate(currentDayOfMonth);
+
+  // 计算两个日期之间的时间差（单位：毫秒）
+  var timeDiff = Math.abs(date.getTime() - new Date().getTime());
+
+  // 转换成天数并求商取整
+  var daysDifference = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+  return Math.floor((daysDifference % 7 === 0 ? daysDifference : daysDifference % 7) / 7) + 1;
 }

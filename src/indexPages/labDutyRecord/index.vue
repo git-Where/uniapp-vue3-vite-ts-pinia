@@ -14,13 +14,13 @@
       </div>
     </u-sticky>
     <div class="lab-content">
-      <div class="labs-content-item">
+      <div class="labs-content-item" v-for="(item,index) in formData" :key="index">
         <div class="labs-content-item-content">
           <div class="labs-content-title clearfix">
-            <div class="labs-already-ins">已巡检</div>
+            <div class="labs-already-ins" v-if="item.TaskStatus === 1">已巡检</div>
             <div>
               <img class="labs-icon" :src="labTitleIcon" />
-              第一节
+              {{item.Begins}}
             </div>
           </div>
           <div class="labs-content-con">
@@ -29,31 +29,25 @@
             <div class="labs-content-con-item">
               <span class="labs-content-con-label">开课信息</span>
               <span class="labs-content-con-span"
-                >第1节</span
+                >{{item.CourseInfo}}</span
               >
             </div>
             <div class="labs-content-con-item">
               <span class="labs-content-con-label">设备状态</span>
               <span class="labs-content-con-span"
-                ><u-icon name="checkmark-circle-fill" color="#54CB2F"></u-icon>开启</span
+                ><u-icon name="checkmark-circle-fill" color="#54CB2F"></u-icon>{{ item.DeviceStatus === 0 ? '正常' : '异常' }}</span
               >
             </div>
             <div class="labs-content-con-item">
               <span class="labs-content-con-label">门禁状态</span>
               <span class="labs-content-con-span">
-                <u-icon name="close-circle-fill" color="#999999"></u-icon>关闭
-              </span>
-            </div>
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">电闸状态</span>
-              <span class="labs-content-con-span">
-                <u-icon name="error-circle-fill" color="#FF3E3D"></u-icon>异常
+                <u-icon name="close-circle-fill" color="#999999"></u-icon>{{ item.IsOpen === 0 ? '关闭' : '开启' }}
               </span>
             </div>
             <div class="labs-content-con-item">
               <span class="labs-content-con-label">巡检任务</span>
               <span class="labs-content-con-span">
-                请在上午第1节课前进行课前巡检 开启并确认设备状态
+                {{item.TaskMsg}}
               </span>
             </div>
           </div>
@@ -61,15 +55,18 @@
             <div class="labs-duty-result-title">
               巡检结果
             </div>
-            <div class="labs-duty-status">
+            <div class="labs-duty-status" v-if="item.TaskResult === 0">
               <img class="labs-duty-status-img" :src="LabStatus" alt="" />
               <span>正常</span>
             </div>
-            <div class="labs-duty-status">
+            <div class="labs-duty-status" v-else>
               <span class="lab-duty-status-icon"></span>
               <span>异常</span>
-              <span class="lab-detail">简要描述填写异常信息</span>
+              <span class="lab-detail">{{ item.ErrMsg }}</span>
             </div>
+          </div>
+          <div class="labs-no-ins" v-if="item.TaskStatus === 0">
+            <span class="labs-ins-btn" @click="handleAwaitClick">待巡检</span>
           </div>
         </div>
       </div>
@@ -207,9 +204,12 @@ import { onShow } from "@dcloudio/uni-app"
 import {labTitleIcon} from '@/static/icon'
 import {RunSuccess,RunError,LabStatus} from '@/static/icon'
 import { calculateDistance } from '@/utils/utils'
+import {getInspectionTask} from '@/api'
+import {timestampToTime} from '@/utils/utils'
 
 onShow(()=>{
   init();
+  getList()
 })
 
 const init = () => {
@@ -227,18 +227,31 @@ const init = () => {
     }
   })
 }
-
-
 const list = ref([
   {
     name: "课程开门巡检",
+    id:1
   },
   {
     name: "课后关门巡检",
+    id:2
   }
 ]);
-const tabClick = (index,item) => {
-  console.log(index,item)
+const formData = ref<any>({})
+const dataTime = ref(Date.now());
+const InspectionType = ref(1)
+
+const getList = async () => {
+  const res = await getInspectionTask({
+    InspectionType:InspectionType.value,
+    SearchDate:timestampToTime(dataTime.value,'2')
+  })
+  formData.value = res
+}
+
+const tabClick = (item) => {
+  InspectionType.value = item.id
+  getList()
 }
 
 const show = ref(false)

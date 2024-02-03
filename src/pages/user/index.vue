@@ -24,7 +24,7 @@
             消息
           </div>
         </div>
-        <div class="my-content-item" @click="goMyNews('')">
+        <div class="my-content-item" @click="handleSignOut">
           <img class="my-content-item-icon" :src="SignOutIcon" alt=""/>
           <div class="my-content-item-title">
             注销
@@ -68,6 +68,12 @@ const goMyNews = (url) => {
   uni.navigateTo({
     url:url
   });
+}
+const handleSignOut = () => {
+  uni.clearStorage()
+  uni.reLaunch({
+    url:'/pages/login/index'
+  })
 }
 </script>
 

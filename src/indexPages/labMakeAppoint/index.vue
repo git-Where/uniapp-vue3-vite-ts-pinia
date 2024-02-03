@@ -1,26 +1,28 @@
 <template>
   <div>
-    <u--form labelPosition="left" labelWidth="75" :model="formData" :rules="rules" ref="form">
+    <u-form labelPosition="left" :model="formData" :rules="rules" ref="form">
       <div class="form-title">
         <img class="form-title-icon" :src="InviteTitleIcon" alt="" />活动信息
       </div>
       <div class="form-activity">
-        <u-form-item label="活动主题" required prop="Titile" borderBottom>
-          <u--input v-model="formData.Titile" placeholder="请输入活动主题" border="none"/>
+        <u-form-item label="活动主题" labelWidth="85" required prop="Titile" borderBottom>
+          <up-input  @change="(value)=>{formData.Titile = value}" :adjust-position="true" placeholder="请输入活动主题" border="none"/>
         </u-form-item>
-        <u-form-item label="活动内容" prop="Content" borderBottom>
-          <u--input v-model="formData.Content" placeholder="请输入活动内容" border="none"/>
+        <u-form-item label="活动内容" labelWidth="85" prop="Content" borderBottom>
+          <up-input @change="(value)=>{formData.Content = value}" :adjust-position="true" placeholder="请输入活动内容" border="none"/>
         </u-form-item>
         <u-form-item
           label="活动类型"
           required
+          labelWidth="85"
           prop="TypeName"
           borderBottom
           @click="activityClick"
         >
-          <u--input
+          <up-input
             v-model="formData.TypeName"
             disabled
+            :adjust-position="true"
             disabledColor="#ffffff"
             placeholder="请选择活动类型"
             border="none"
@@ -29,17 +31,18 @@
             <u-icon name="arrow-right"></u-icon>
           </template>
         </u-form-item>
-        <u-form-item label="组织者" prop="Organizer" borderBottom>
-          <u--input v-model="formData.Organizer" placeholder="请输入组织者" border="none"/>
+        <u-form-item label="组织者" labelWidth="85" prop="Organizer" borderBottom>
+          <up-input @change="(value)=>{formData.Organizer = value}" :adjust-position="true" placeholder="请输入组织者" border="none"/>
         </u-form-item>
-        <u-form-item label="联系电话" required prop="Phone" borderBottom>
-          <u--input v-model="formData.Phone" placeholder="请输入联系电话" border="none"/>
+        <u-form-item label="联系电话" labelWidth="85" required prop="Phone" borderBottom>
+          <up-input @change="(value)=>{formData.Phone = value}" :adjust-position="true" placeholder="请输入联系电话" border="none"/>
         </u-form-item>
-        <u-form-item label="指导老师" required prop="Teacher" borderBottom
+        <u-form-item label="指导老师" labelWidth="85" required prop="Teacher" borderBottom
           @click="popupTeachRef.open('bottom')">
-          <u--input
+          <up-input
             v-model="formData.Teacher"
             disabled
+            :adjust-position="true"
             disabledColor="#ffffff"
             placeholder="请选择指导老师"
             border="none"
@@ -48,8 +51,8 @@
             <u-icon name="arrow-right"></u-icon>
           </template>
         </u-form-item>
-        <u-form-item label="人数" required prop="Number" borderBottom>
-          <u--input v-model="formData.Number" type="number" placeholder="请输入人数" border="none"/>
+        <u-form-item label="人数" labelWidth="85" required prop="Number" borderBottom>
+          <up-input @change="(value)=>{formData.Number = value}" :adjust-position="true" type="number" placeholder="请输入人数" border="none"/>
         </u-form-item>
       </div>
       <div class="form-title">
@@ -59,17 +62,19 @@
         <u-form-item
           label="实验室"
           required
+          labelWidth="85"
           prop="LaboratoryName"
           borderBottom
           @click="popupLabRef.open('bottom')"
         >
-          <u--input
+          <up-input
             v-model="formData.LaboratoryName"
             disabled
+            :adjust-position="true"
             disabledColor="#ffffff"
             placeholder="请选择实验室"
             border="none"
-          ></u--input>
+          />
           <template #right>
             <u-icon name="arrow-right"></u-icon>
           </template>
@@ -77,6 +82,7 @@
         <u-form-item
           label="预约日期"
           required
+          labelWidth="85"
           prop="Laboratory"
         >
         </u-form-item>
@@ -87,29 +93,8 @@
           </div>
           <img class="day-add-icon" :src="AddIcon" alt="" @click="handleDayAdd"/>
         </div>
-        <!-- <u-form-item
-          label="预约时间"
-          required
-          prop="userInfo.sex"
-          borderBottom
-          @click="
-            show = true;
-          "
-
-        >
-          <u--input
-            v-model="formData.userInfo.sex"
-            disabled
-            disabledColor="#ffffff"
-            placeholder="请选择预约时间"
-            border="none"
-          ></u--input>
-          <template #right>
-            <u-icon name="arrow-right"></u-icon>
-          </template>
-        </u-form-item> -->
       </div>
-    </u--form>
+    </u-form>
     <img class="invite-btn" :src="InviteSubmit" @click="submit" />
     <u-picker
       :show="show"
@@ -163,7 +148,7 @@
       </div>
     </template>
   </Popup>
-  <AppointTime ref="appTimeRef" :model-value="modelTimeValue" @update:model-value="updateModelValue"/>
+  <AppointTime ref="appTimeRef"  @update:model-value="updateModelValue"/>
 </template>
 
 <script setup lang="ts">
@@ -191,44 +176,91 @@ const formData = ref({
   Laboratory:[]
 });
 const rules = {
-  "Titile": {
-    type: "string",
-    required: true,
-    message: "请填写活动主题",
-    trigger: ["blur", "change"],
-  },
-  "TypeName": {
+  Titile: [
+    {
+      type: "string",
+      required: true,
+      message: "请填写活动主题",
+      trigger: ["blur", "change"],
+    },
+    {
+			// 自定义验证函数，见上说明
+			validator: (rule, value, callback) => {
+				return formData.value.Titile.length > 0
+			},
+			message: '请填写活动主题',
+			// 触发器可以同时用blur和change
+			trigger: ['change','blur'],
+		}
+  ],
+  TypeName: {
     type: "string",
     required: true,
     message: "请选择活动类型",
     trigger: ["blur", "change"],
   },
-  "Phone": {
-    type: "string",
-    required: true,
-    message: "请输入联系电话",
-    trigger: ["blur", "change"],
-  },
-  "TeacherId": {
+  Phone: [
+      {
+      type: "string",
+      required: true,
+      message: "请输入联系电话",
+      trigger: ["blur", "change"],
+    },
+    {
+			// 自定义验证函数，见上说明
+			validator: (rule, value, callback) => {
+				// 上面有说，返回true表示校验通过，返回false表示不通过
+				// uni.$u.test.mobile()就是返回true或者false的
+        // let regPone: any = null;
+        // let mobile = /^1(3|4|5|6|7|8|9)\d{9}$/; // 手机正则
+        // let tel = /^(0\d{2,3}-){0,1}\d{7,8}$/; //座机
+        // if (value.contactPhone.charAt(0) === '0') {
+        //   regPone = tel;
+        // } else {
+        //   regPone = mobile;
+        // }
+        // if (!regPone.test(value.contactPhone)) {
+        //   return useMessage('联系电话为手机号或者电话格式，请填写联系电话', {
+        //     type: 'warning'
+        //   });
+        // }
+				return uni.$u.test.mobile(value) && formData.value.Titile.length > 0;
+			},
+			message: '联系电话不正确',
+			// 触发器可以同时用blur和change
+			trigger: ['change','blur'],
+		}
+  ],
+  Teacher: {
     type: "string",
     required: true,
     message: "请选择指导老师",
     trigger: ["blur", "change"],
   },
-  "Number": {
-    type: "string",
-    required: true,
-    message: "请输入活动人数",
-    trigger: ["blur", "change"],
-  },
-  "LaboratoryName": {
+  Number: [
+    {
+      required: true,
+      type:'integer',
+      message: "请输入正整数活动人数",
+      trigger: ["blur", "change"],
+    },
+    {
+			// 自定义验证函数，见上说明
+			validator: (rule, value, callback) => {
+				return formData.value.Number.length > 0
+			},
+			message: '请输入正整数活动人数',
+			// 触发器可以同时用blur和change
+			trigger: ['change','blur'],
+		}
+  ],
+  LaboratoryName: {
     type: "string",
     required: true,
     message: "请选择实验室",
     trigger: ["blur", "change"],
   },
 }
-
 const activityList = ref()
 const defaultIndex = ref([0])
 const labList = ref()
@@ -264,6 +296,7 @@ const activityClick = () => {
 const confirm = (e) => {
   formData.value.Type = e.value[0].Value
   formData.value.TypeName = e.value[0].Key
+  form.value.validateField('TypeName')
   show.value = false
 }
 
@@ -273,6 +306,7 @@ const popupTeachChange = async () => {
      return pre
   },[]).join()
   popupTeachRef.value.cancel()
+  form.value.validateField('Teacher')
 }
 
 const popupLabChange = () => {
@@ -281,20 +315,26 @@ const popupLabChange = () => {
      return pre
   },[]).join()
   popupLabRef.value.cancel()
+  form.value.validateField('LaboratoryName')
 }
 
 
 const submit = async() => {
-  dealDateFormatter()
-  return false
   await form.value.validate()
+  if(timeList.value.length === 0){
+    return uni.showToast({
+      title: '请选择预约日期' ,
+      icon: 'none'
+    })
+  }
   formData.value.TeacherId = formData.value.TeacherId.join() as any
   const res = await addBusinessActivity(formData.value)
   const params = {
     ActivityId:res,
-    ScheduleList:[]
+    ScheduleList:dealDateFormatter()
   }
-  await addBusinessBatch(params)
+  const resData = await addBusinessBatch(params)
+  uni.navigateBack()
 }
 
 const dealDateFormatter = () => {
@@ -302,32 +342,37 @@ const dealDateFormatter = () => {
   timeList.value.forEach((item)=>{
     const day = item.split(' ')[0]
     const dayTime = item.split(' ')[1]
-    dayMap[day] = dayMap?.[day]?.length === 0 ? [] : dayMap[day]
-    dayMap[day].push(dayTime)
+    if(dayMap.hasOwnProperty(day)){
+      dayMap[day].push(dayTime)
+    }else{
+      dayMap[day] = []
+      dayMap[day].push(dayTime)
+    }
   })
-  console.log('dayMap',dayMap)
+  const ScheduleList = Object.keys(dayMap).map((key) => {
+    return dayMap[key].map((item)=>{
+      const splitItem = item.split('-')
+      return {
+        Date:key,
+        StartTime:splitItem[0],
+        EndTime:splitItem[1],
+        Laboratory:formData.value.Laboratory,
+      }
+    })
+  });
+  return ScheduleList.flat()
 }
 
 const appTimeRef = ref()
-const timeList = ref(['2023-11-11 01-12'])
-const modelTimeValue = ref('')
+const timeList = ref([])
 const updateModelValue = (value) => {
-  console.log(333334443,value)
   if(!value) return
   timeList.value.push(value)
 }
-// watch(()=>modelTimeValue,(newVal:any)=>{
-//   if(!newVal.value) return
-//   timeList.value.push(newVal.value)
-// },{
-//   immediate:false,
-//   deep:true
-// })
 const handleDelTime = (index) => {
   timeList.value.splice(index,1)
 }
 const handleDayAdd = () => {
-  modelTimeValue.value = ''
   appTimeRef.value.open()
 }
 </script>
@@ -388,6 +433,7 @@ page {
     height: 72rpx;
     background: rgba(71, 159, 254, 0.15);
     line-height: 72rpx;
+    text-align: center;
     font-size: 32rpx;
     color: #4295ff;
   }

@@ -1,161 +1,21 @@
 <template>
   <div class="content-box">
-    <div class="content-item">
+    <div class="content-item" v-for="(item,index) in modelValue" :key="index">
       <div class="content-item-left">
         <div>
           <img class="content-item-icon" :src="CourseIcon" />
           <text class="content-item-text">
-            1~2节
+            {{item.StartLesson}}~{{item.EndLesson}}节
           </text>
         </div>
       </div>
       <div class="content-item-right">
         <div>
-          <div class="content-item-right-text">
-            <span class="content-item-title">[201]数智制造大赛第二次选拔</span>
+          <div class="content-item-right-text" v-for="(n,i) in item.classList" :key="i">
+            <span class="content-item-title">{{ n.LaboratoryName }}</span>
             <img class="content-item-user-img" :src="CourseUser"/>
-            <span class="content-item-user-name">李强</span>
+            <span class="content-item-user-name">{{ n.TeacherName }}</span>
           </div>
-        </div>
-      </div>
-    </div>
-    <div class="content-item">
-      <div class="content-item-left">
-        <div>
-          <img class="content-item-icon" :src="CourseIcon" />
-          <text class="content-item-text">
-            1~2节
-          </text>
-        </div>
-      </div>
-      <div class="content-item-right">
-        <div>
-          <div class="content-item-right-text">
-            <span class="content-item-title">[201]数智制造大赛第二次选拔</span>
-            <img class="content-item-user-img" :src="CourseUser"/>
-            <span class="content-item-user-name">李强</span>
-          </div>
-          <div class="content-item-right-text">
-            <span class="content-item-title">[201]数智制造大赛第二次选拔</span>
-            <img class="content-item-user-img" :src="CourseUser"/>
-            <span class="content-item-user-name">李强</span>
-          </div>
-          <div class="content-item-right-text">
-            <span class="content-item-title">[201]数智制造大赛第二次选拔</span>
-            <img class="content-item-user-img" :src="CourseUser"/>
-            <span class="content-item-user-name">李强</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="content-item">
-      <div class="content-item-left">
-        <div>
-          <img class="content-item-icon" :src="CourseIcon" />
-          <text class="content-item-text">
-            1~2节
-          </text>
-        </div>
-      </div>
-      <div class="content-item-right">
-        <div>
-          <div class="content-item-right-text">
-            <span class="content-item-title">[201]数智制造大赛第二次选拔</span>
-            <img class="content-item-user-img" :src="CourseUser"/>
-            <span class="content-item-user-name">李强</span>
-          </div>
-          <div class="content-item-right-text">
-            <span class="content-item-title">[201]数智制造大赛第二次选拔</span>
-            <img class="content-item-user-img" :src="CourseUser"/>
-            <span class="content-item-user-name">李强</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="content-item">
-      <div class="content-item-left">
-        <div>
-          <img class="content-item-icon" :src="CourseIcon" />
-          <text class="content-item-text">
-            1~2节
-          </text>
-        </div>
-      </div>
-      <div class="content-item-right">
-        <div>
-          <div class="content-item-right-text">
-            <span class="content-item-title">[201]数智制造大赛第二次选拔</span>
-            <img class="content-item-user-img" :src="CourseUser"/>
-            <span class="content-item-user-name">李强</span>
-          </div>
-          <div class="content-item-right-text">
-            <span class="content-item-title">[201]数智制造大赛第二次选拔</span>
-            <img class="content-item-user-img" :src="CourseUser"/>
-            <span class="content-item-user-name">李强</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="content-item">
-      <div class="content-item-left">
-        <div>
-          <img class="content-item-icon" :src="CourseIcon" />
-          <text class="content-item-text">
-            1~2节
-          </text>
-        </div>
-      </div>
-      <div class="content-item-right">
-        <div>
-          <div class="content-item-right-text">
-            <span class="content-item-title">[201]数智制造大赛第二次选拔</span>
-            <img class="content-item-user-img" :src="CourseUser"/>
-            <span class="content-item-user-name">李强</span>
-          </div>
-          <div class="content-item-right-text">
-            <span class="content-item-title">[201]数智制造大赛第二次选拔</span>
-            <img class="content-item-user-img" :src="CourseUser"/>
-            <span class="content-item-user-name">李强</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="content-item">
-      <div class="content-item-left">
-        <div>
-          <img class="content-item-icon" :src="CourseIcon" />
-          <text class="content-item-text">
-            1~2节
-          </text>
-        </div>
-      </div>
-      <div class="content-item-right">
-        <div>
-          <div class="content-item-right-text">
-            <span class="content-item-title">[201]数智制造大赛第二次选拔</span>
-            <img class="content-item-user-img" :src="CourseUser"/>
-            <span class="content-item-user-name">李强</span>
-          </div>
-          <div class="content-item-right-text">
-            <span class="content-item-title">[201]数智制造大赛第二次选拔</span>
-            <img class="content-item-user-img" :src="CourseUser"/>
-            <span class="content-item-user-name">李强</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="content-item">
-      <div class="content-item-left">
-        <div>
-          <img class="content-item-icon" :src="CourseIcon" />
-          <text class="content-item-text">
-            1~2节
-          </text>
-        </div>
-      </div>
-      <div class="content-item-right">
-        <div>
-          <div class="content-item-no-data">暂无排课</div>
         </div>
       </div>
     </div>
@@ -164,6 +24,14 @@
 
 <script setup lang="ts">
 import {CourseIcon,CourseUser} from '@/static/icon'
+
+const props = defineProps({
+  modelValue: {
+    type: Object as PropType<any>,
+    default: () => []
+  }
+})
+console.log(111,props.modelValue)
 </script>
 
 <style scoped lang="scss">

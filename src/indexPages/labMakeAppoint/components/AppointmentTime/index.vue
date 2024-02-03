@@ -5,21 +5,34 @@
         <u--form
           labelPosition="left"
           labelWidth="75"
-          :model="formModel"
+          :model="formData"
           ref="form"
         >
           <u-form-item
-            label="预约时间"
+            label="预约日期"
             style="width: 100rpx;"
-            @click="handleAddPopup"
+            @click="handleDay"
           >
             <u--input
-              v-model="formModel.time"
+              v-model="formData.day"
               disabled
               disabledColor="#ffffff"
-              placeholder="请选择预约时间"
+              placeholder="请选择预约日期"
               border="none"
             ></u--input>
+            <template #right>
+              <u-icon name="arrow-right"></u-icon>
+            </template>
+          </u-form-item>
+          <u-form-item
+            label="预约时间"
+            class="date-time"
+          >
+            <div style="text-align: right;">
+              <span class="inline-input" @click="handleTime('beginTime')" :style="{color:formData.beginTime?'#303133':'#b9b7b7'}">{{formData.beginTime || '请选择预约开始时间'}}</span>
+              <span class="inline-input">-</span>
+              <span class="inline-input" @click="handleTime('endTime')" :style="{color:formData.endTime?'#303133':'#b9b7b7'}">{{formData.endTime || '请选择预约结束时间'}}</span>
+            </div>
             <template #right>
               <u-icon name="arrow-right"></u-icon>
             </template>
@@ -28,139 +41,67 @@
       </div>
     </template>
   </Popup>
-  <u-picker
+  <u-datetime-picker
+    ref="timePickerRef"
     :show="show"
-    :defaultIndex="defaultIndex"
-    :columns="columns"
-    :showToolbar="true"
-    @cancel="show = false"
+    mode="time"
     @confirm="confirm"
-    @change="changeHandler"
-  ></u-picker>
+></u-datetime-picker>
+<u-datetime-picker
+  ref="datetimePickerRef"
+  :show="dateTimeShow"
+  mode="date"
+  @confirm="dateConfirm"
+></u-datetime-picker>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import Popup from "@/components/Popup/index.vue";
-import { betweenArray, getDaysInMonth } from "@/utils/utils";
+import { timestampToTime } from "@/utils/utils";
 
-const props = defineProps({
-  modelValue:{
-    type:Object,
-    default: ()=>[]
-  }
-})
 const emit = defineEmits(['update:modelValue'])
 const defaultIndex = ref([0,0,0,0,0])
-const formModel = ref({
-  time: "",
+const formData = ref({
+  beginTime: "",
+  endTime: "",
+  day:''
 });
+const datetimePickerRef = ref()
+const dateTimeShow = ref(false)
 const popupRef = ref();
 const show = ref(false);
-const columns = ref([
-  [2020,2021, 2022, 2023],
-  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-  [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-  ],
-  [
-    "00",
-    "01",
-    "02",
-    "03",
-    "04",
-    "05",
-    "06",
-    "07",
-    "08",
-    "09",
-    "10",
-    "11",
-    "12",
-    "13",
-    "14",
-    "15",
-    "16",
-    "17",
-    "18",
-    "19",
-    "20",
-    "21",
-    "22",
-    "23",
-    "24",
-  ],
-  [
-    "00",
-    "01",
-    "02",
-    "03",
-    "04",
-    "05",
-    "06",
-    "07",
-    "08",
-    "09",
-    "10",
-    "11",
-    "12",
-    "13",
-    "14",
-    "15",
-    "16",
-    "17",
-    "18",
-    "19",
-    "20",
-    "21",
-    "22",
-    "23",
-    "24",
-  ]
-]);
-const handleAddPopup = () => {
+const timePickerRef = ref()
+const typeName = ref('')
+const handleTime = (type) => {
   show.value = true;
+  typeName.value = type
 };
-const changeHandler = (e) => {
-  const { columnIndex, value, values, index, indexs } = e;
-  console.log('e',value,columnIndex)
-  if (columnIndex === 0 ||columnIndex === 1) {
-    const month = value[1]
-    const year = value[0]
-    const dayNum = getDaysInMonth(year,month)
-    const colum = betweenArray(1,dayNum)
-    columns.value[2] = colum
-    indexs[2] = 0
-    defaultIndex.value = indexs
-    console.log('defaultIndex',defaultIndex)
-  }
+const handleDay = () => {
+  dateTimeShow.value = true
 }
-const confirm = (e) => {
-  const {value} = e
-  const formatter = value.join('-').replace(/((?:.*?-.*?){2}.*?)-/m, "$1 ")
-  formModel.value.time = formatter
+const confirm = (val) => {
+  formData.value[typeName.value] = val.value
   show.value = false
 };
+const dateConfirm = (val) => {
+  formData.value.day = timestampToTime(val.value,'2')
+  dateTimeShow.value = false
+}
 const popupChange = (val) => {
-  console.log(val, "111111");
-  emit('update:modelValue',formModel.value.time)
+  const {day,beginTime,endTime} = formData.value
+  if(!day || !beginTime || !endTime){
+   return uni.showToast({
+      title: '请选择时间' ,
+      icon: 'none'
+    })
+  }
+  const time = day+' '+beginTime + '-' + endTime
+  emit('update:modelValue',time)
   popupRef.value.cancel()
 };
 const open = () => {
-  formModel.value.time = ''
+  formData.value.time = ''
   defaultIndex.value = [0,0,0,0,0]
   popupRef.value.open("bottom");
 };
@@ -169,4 +110,10 @@ defineExpose({
 });
 </script>
 
-<style scoped lang="scss"></style>
+<style  lang="scss">
+.inline-input {
+  display: contents;
+  text-align: right;
+  font-size: 15px;
+}
+</style>

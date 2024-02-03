@@ -90,6 +90,7 @@ function goTest() {
 }
 
 const roleId = ref(systemInfos.Role_Id);
+console.log(roleId,33333333333)
 const sortList = ref(RoleList[4])
 
 const statusHeight = ref(0)
@@ -122,11 +123,11 @@ const init = async () => {
 
 const jump = (item) => {
   if(item.type === 'tab'){
-    return uni.switchTab({
+    return uni.reLaunch({
       url:item.url
     })
-
   }
+
   uni.navigateTo({
     url:item.url
   });
