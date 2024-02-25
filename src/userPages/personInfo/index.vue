@@ -8,9 +8,9 @@
       ref="form"
     >
       <div class="form-activity">
-        <u-form-item label="昵称" prop="nickName" :borderBottom="true">
+        <u-form-item label="昵称" prop="NickName" :borderBottom="true">
           <u--input
-            v-model="formModel.nickName"
+            v-model="formModel.NickName"
             placeholder="请输入昵称"
             border="none"
           ></u--input>
@@ -20,9 +20,9 @@
             ></u-icon>
           </template>
         </u-form-item>
-        <u-form-item label="邮箱" prop="email" borderBottom>
+        <u-form-item label="邮箱" prop="EMAIL" borderBottom>
           <u--input
-            v-model="formModel.email"
+            v-model="formModel.EMAIL"
             placeholder="请输入邮箱"
             border="none"
           ></u--input>
@@ -54,36 +54,53 @@
 </template>
 
 <script setup lang="ts">
+import { setUserInfo } from '@/api';
 import {PersonSubmit} from '@/static/icon'
+import { systemInfos } from '@/utils/utils';
 import { ref } from "vue";
 
 const form = ref();
 const formModel = ref({
-  nickName: "",
-  email: "",
+  NickName: "",
+  EMAIL: "",
+  Id:systemInfos.Id
 });
 const rules = ref({
-  "nickName": {
+  "NickName": {
     type: "string",
     required: true,
     message: "请输入昵称",
     trigger: ["blur", "change"],
   },
-  "email": {
-    type: "string",
-    required: true,
-    message: "请输入邮箱",
-    trigger: ["blur", "change"],
-  },
+  "EMAIL":[
+    {
+      type: "string",
+      required: true,
+      message: "请输入邮箱",
+      trigger: ["blur", "change"],
+    },
+    {
+			// 自定义验证函数，见上说明
+			validator: (rule, value, callback) => {
+				// 上面有说，返回true表示校验通过，返回false表示不通过
+				// uni.$u.test.mobile()就是返回true或者false的
+				return uni.$u.test.email(value);
+			},
+			message: '邮箱输入不正确',
+			// 触发器可以同时用blur和change
+			trigger: ['change','blur'],
+		}
+  ]
 });
 const submit = () => {
   form.value
     .validate()
-    .then((res) => {
-      uni.$u.toast("校验通过", res);
+    .then(async (res) => {
+      console.log("校验通过", res);
+      await setUserInfo(formModel.value)
     })
     .catch((errors) => {
-      uni.$u.toast("校验失败");
+      console.log("校验失败");
     });
 };
 

@@ -1,49 +1,67 @@
 <template>
   <div class="office-box">
-    <div class="office-item">
+    <div class="office-item" v-for="item in list" :key="item.Id">
       <div class="labs-content-title">
         <div>
           <img class="labs-icon" :src="labTitleIcon" />
-          第一节
+          {{item.Begins}}
         </div>
       </div>
-      <!-- <div class="office-already">
+      <div class="office-already" v-if="item.TaskStatus === 1">
         <span class="office-already-text">
           已签到
         </span>
         <span class="office-already-to">
-          已签给张三
+          已签给{{item.SignTo}}
         </span>
-      </div> -->
-      <div class="office-sign" @click="handleSign">
-        <div class="office-sign-btn">
+      </div>
+      <div class="office-sign" v-else>
+        <div class="office-sign-btn" @click="handleSign(item.Id)">
           签到
         </div>
-        <div class="office-sign-to" @click="tabClick">
+        <div class="office-sign-to" @click="handleTo(item.Id)">
           签给别人
         </div>
       </div>
     </div>
   </div>
-  <u-picker :show="show" :close-on-click-overlay="true" :columns="columns" @cancel="close" @close="close" @confirm="confirm" @change="changeHandler"></u-picker>
+  <u-picker :show="show" :close-on-click-overlay="true" key-name="RealName" :columns="columns" @cancel="show = false" @close="show = false" @confirm="confirm" @change="changeHandler"></u-picker>
 </template>
 
 <script setup lang="ts">
 import {ref,reactive} from 'vue'
 import {labTitleIcon} from '@/static/icon'
+import { getDutyCheckIn, getDutyList, getStudentList } from '@/api';
+
+const list = ref()
+
 const show = ref(false);
-const columns = reactive([
-  ['张三', '里斯','王五'],
-]);
-const tabClick = (val) => {
+const columns = ref<any>([]);
+onShow(()=>{
+  init()
+  getStudent()
+})
+const init = async() => {
+  const res = await getDutyList({
+    SearchDate:''
+  })
+  list.value = res
+}
+const getStudent = async() => {
+  const studentRes = await getStudentList({
+    page:1,
+    pagesize:1000
+  })
+  columns.value = [studentRes.data]
+}
+let Id = 0
+const handleTo = (id) => {
+  Id = id
   show.value = true
 }
 
-const close = () => {
-  show.value = false
-
-}
-const confirm = () => {
+const confirm = (e) => {
+  handleSign(Id,e.value[0].Id)
   show.value = false
 
 }
@@ -55,8 +73,23 @@ const changeHandler = (e) => {
   } = e;
 }
 
-const handleSign = () => {
-  uni.$u.toast('签到成功')
+const handleSign = async (Id,UserId=0) => {
+  uni.getLocation({
+    type: 'gcj02',
+    success: async function(res) {
+      const {longitude,latitude} = res
+      console.log('经度：' + res.longitude);
+      console.log('纬度：' + res.latitude);
+      await getDutyCheckIn({
+        Id,latitude,longitude,
+        UserId
+      })
+      uni.$u.toast('签到成功')
+      init()
+    },
+    fail: function(err) {
+    }
+  })
 }
 </script>
 

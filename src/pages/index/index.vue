@@ -91,6 +91,7 @@ function goTest() {
 
 const roleId = ref(systemInfos.Role_Id);
 console.log(roleId,33333333333)
+// TODO:要写后端返回的值 RoleList[roleId.value]
 const sortList = ref(RoleList[4])
 
 const statusHeight = ref(0)
@@ -105,7 +106,9 @@ const navBg = ref(false)
 
 onShow(() => {
   const token = uni.getStorageSync('token') || '';
+  console.log('indextoken',token)
   if(!token){
+    console.log('1111',!token)
     return uni.reLaunch({
       url:'/pages/login/index'
     })

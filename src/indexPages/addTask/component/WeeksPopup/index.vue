@@ -31,7 +31,7 @@ import { ref } from 'vue';
 import Popup from '@/components/Popup/index.vue'
 
 const props = defineProps({
-  modelValue:{
+  weekNum:{
     type:Number,
     default:0
   }
@@ -55,7 +55,7 @@ const radiolist = ref([
 ]);
 const weekNums = ref<any>([])
 
-watch(()=>props.modelValue,(val)=>{
+watch(()=>props.weekNum,(val)=>{
   if(val > 0){
     weekNums.value = []
     init(val)
@@ -92,8 +92,8 @@ const groupChange = (val) => {
 };
 
 
-const Change = (val) => {
-  emit('change',val)
+const Change = () => {
+  emit('change',weekNums.value)
   popupRef.value.cancel()
 }
 const numChange = (val) => {

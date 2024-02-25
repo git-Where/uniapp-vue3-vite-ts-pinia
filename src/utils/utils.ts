@@ -191,3 +191,12 @@ export const getWeekNumber = (dateString) => {
 
   return Math.floor((daysDifference % 7 === 0 ? daysDifference : daysDifference % 7) / 7) + 1;
 }
+
+// 获取当前年月日
+export const getCurrentDate = () => {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1; // 月份是从 0 开始计数的，因此要加1
+  const day = currentDate.getDate();
+  return `${year}-${month}-${day}`
+}

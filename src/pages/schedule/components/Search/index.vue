@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import {getLabAll,getSemesterAll} from '@/api'
-import { formatDate, getWeeks } from "@/utils/utils";
+import { formatDate, getCurrentDate, getWeeks } from "@/utils/utils";
 
 const props = defineProps({
   modelValue: {
@@ -90,8 +90,9 @@ const getWeekList = (val) => {
   const beginTime = formatDate(val.Begin_Date).split(' ')[0]
   const endTime = formatDate(val.End_Date).split(' ')[0]
   const weeks = getWeeks(beginTime,endTime)+1
-  const current = getWeeks(beginTime,'2023-05-20')+1
-  console.log('周数：',weeks,current)
+  const currentDate = getCurrentDate()
+  const current = getWeeks(beginTime,currentDate)+1
+  console.log('周数：',beginTime,endTime,currentDate,weeks,current)
   formData.value.weeksName = `第${current}周`
   formData.value.weeks = current
   for(let i = 0;i<weeks;i++){

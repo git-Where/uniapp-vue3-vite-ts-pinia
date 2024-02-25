@@ -14,21 +14,21 @@
           </div>
           <div class="labs-content-con">
             <div class="labs-content-con-item">
-              <span class="labs-content-con-label"> 巡检教室</span>
-              <span class="labs-content-con-span"
-                >{{item.Begins}}</span
-              >
-            </div>
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">巡检人员</span>
+              <span class="labs-content-con-label">值班人员</span>
               <span class="labs-content-con-span"
                 >{{item.Executive}}</span
               >
             </div>
             <div class="labs-content-con-item">
-              <span class="labs-content-con-label">巡检状态</span>
+              <span class="labs-content-con-label">签到状态</span>
               <span class="labs-content-con-span">
                 {{status[item.TaskStatus]}}
+              </span>
+            </div>
+            <div class="labs-content-con-item">
+              <span class="labs-content-con-label">签到时间</span>
+              <span class="labs-content-con-span">
+                {{item.ExecutionTime}}
               </span>
             </div>
           </div>
@@ -79,7 +79,7 @@ const handleTime = () => {
 }
 
 const confirm = (val) => {
-  dataTime.value = val
+  dataTime.value = val.value
   show.value = false
   init()
 }

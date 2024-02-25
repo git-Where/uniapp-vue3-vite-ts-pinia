@@ -7,7 +7,7 @@
       <div class="class-item-right">
         <div class="class-item-title clearfix">
           <div class="class-item-button ">
-            <up-button v-if="item.laboratorys?.length === 0" class="class-item-btn" type="primary" :plain="true" text="选择实验室" @click="chooseLab"/>
+            <up-button v-if="item.laboratorys?.length === 0" class="class-item-btn" type="primary" :plain="true" text="选择实验室" @click="chooseLab(item)"/>
             <div v-else class="class-item-btn class-room u-line-1" @click="chooseLab(item)">
               <span class="class-item-room u-line-1" v-for="n in item.laboratorys" :key="n.Id">{{ n.name }}</span>
             </div>
@@ -17,10 +17,14 @@
         <div class="class-item-status">
           状态
           <div class="class-item-switch">
-            <u-switch v-model="item.IsEnable" size="15" activeColor="#3D94EF"
-    inactiveColor="#FF6564" @change="switchChange(item)">
-  </u-switch>
-</div>
+            <u-switch
+              v-model="item.IsEnable"
+              size="15"
+              activeColor="#3D94EF"
+              inactiveColor="#FF6564"
+              @change="switchChange(item)">
+            </u-switch>
+          </div>
         </div>
         <div class="class-item-map" v-if="item.Describe">
           {{item.Describe}}
@@ -104,11 +108,12 @@ const getLabs = async () => {
   labList.value=res
 }
 const checkboxChange = async (ids) => {
+  console.log(ids,'ids')
   checkboxValue.value=ids
 };
 const chooseLab = (itemData:any = []) => {
   SenceId.value = itemData.Id
-  const ids = itemData.laboratorys.map((item:any)=>{
+  const ids = itemData?.laboratorys?.map((item:any)=>{
     return item.Id
   })
   checkboxValue.value = ids

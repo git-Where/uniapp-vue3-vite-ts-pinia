@@ -159,8 +159,10 @@ page {
   border-radius: 10rpx;
 }
 .lab-content-item {
+  display: inline-block;
+  padding: 0 20rpx;
   border-radius: 10rpx;
-  width: 260rpx;
+  width: auto;
   height: 88rpx;
   background: #fff;
   line-height: 88rpx;

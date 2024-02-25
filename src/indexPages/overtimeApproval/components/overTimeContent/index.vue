@@ -1,11 +1,11 @@
 <template>
   <div class="approve-content">
-    <div class="approve-content-item">
-      <div class="approve-content-item-title">[417]自贸区实验室</div>
+    <div class="approve-content-item" v-for="(item,index) in info" :key="index">
+      <div class="approve-content-item-title">{{ item.lab }}</div>
       <div class="approve-content-item-content">
         <div class="approve-content-title">
           <img class="approve-icon" :src="ApproveIcon" />
-          整理档案
+          {{ item.content }}
         </div>
         <div class="approve-content-con">
           <div class="approve-content-con-item">
@@ -17,7 +17,7 @@
           <div class="approve-content-con-item">
             <span class="approve-content-con-label">状态</span>
             <span class="approve-content-con-span status-color"
-              >待审核</span
+              >{{ statusMap[item.status] }}</span
             >
           </div>
           <div class="approve-content-con-item">
@@ -33,7 +33,18 @@
 import { ref } from "vue";
 import {ApproveIcon} from '@/static/icon'
 
+defineProps({
+  info:{
+    type: Object,
+    default:()=>{}
+  }
+})
 
+const statusMap = {
+  0:'待审核',
+  1:'已通过',
+  2:'已拒绝'
+}
 </script>
 
 <style lang="scss">

@@ -1,3 +1,22 @@
+<template>
+  <view class="content">
+    <img class="login-banner" :src="Logo" />
+    <div class="login-form">
+      <div class="login-title">登录</div>
+      <u--form labelPosition="left" :model="form" ref="formRef">
+        <u-form-item label="" prop="username"  :leftIcon="User">
+          <u--input v-model="form.username" border="none" placeholder="请输入账号"/>
+        </u-form-item>
+        <u-form-item label="" prop="password"  :leftIcon="Pwd">
+          <u--input v-model="form.password" password border="none" placeholder="请输入密码"/>
+        </u-form-item>
+      </u--form>
+    </div>
+    <div class="login-btn">
+      <img :src="Login" @click="login" alt="">
+    </div>
+  </view>
+</template>
 <script setup lang="ts">
 import {ref} from 'vue'
 import { setSkuTrack,getUserInfo } from '@/api';
@@ -8,6 +27,7 @@ const form = ref({
   username: '',
   password: '',
 })
+console.log('login')
 
 const login = async () => {
   if(!form.value.username || !form.value.password){
@@ -51,26 +71,6 @@ const getToken = async (encryptedData,iv,code) => {
 }
 
 </script>
-
-<template>
-  <view class="content">
-    <img class="login-banner" :src="Logo" />
-    <div class="login-form">
-      <div class="login-title">登录</div>
-      <u--form labelPosition="left" :model="form" ref="formRef">
-        <u-form-item label="" prop="username"  :leftIcon="User">
-          <u--input v-model="form.username" border="none" placeholder="请输入账号"/>
-        </u-form-item>
-        <u-form-item label="" prop="password"  :leftIcon="Pwd">
-          <u--input v-model="form.password" password border="none" placeholder="请输入密码"/>
-        </u-form-item>
-      </u--form>
-    </div>
-    <div class="login-btn">
-      <img :src="Login" @click="login" alt="">
-    </div>
-  </view>
-</template>
 
 <style  lang="scss">
 .content {

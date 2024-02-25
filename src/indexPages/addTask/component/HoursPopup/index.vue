@@ -1,7 +1,7 @@
 <template>
   <u-picker
     ref="uPickerRef"
-    :show="show"
+    :show="isShow"
     :title="title"
     :columns="columns"
     @confirm="confirm"
@@ -16,7 +16,6 @@ import { betweenArray } from "@/utils/utils";
 export default {
   data () {
     return {
-      show: false,
       columns: [
         ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
@@ -47,10 +46,6 @@ export default {
       }
     }
   },
-  created () {
-    console.log('hours',this.isShow)
-    this.show = this.isShow
-  },
   methods:{
     changeHandler(e){
       const { columnIndex, value, values, index, picker=this.$refs.uPickerRef } = e;
@@ -64,11 +59,9 @@ export default {
       this.hourVal = value
     },
     confirm(e){
-      this.show = false;
       this.$emit('change', this.hourVal)
     },
     cancel(){
-      this.show = false;
       this.$emit('cancel')
     }
   }

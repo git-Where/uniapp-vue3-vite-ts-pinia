@@ -24,7 +24,7 @@
             </div>
           </div>
           <div class="labs-content-con">
-            <img class="labs-status-img" :src="RunSuccess" alt=""/>
+            <img class="labs-status-img" :src="item.DeviceStatus === 0 ? RunSuccess : RunError" alt=""/>
             <!-- <img :src="RunError" alt=""/> -->
             <div class="labs-content-con-item">
               <span class="labs-content-con-label">开课信息</span>
@@ -34,14 +34,18 @@
             </div>
             <div class="labs-content-con-item">
               <span class="labs-content-con-label">设备状态</span>
-              <span class="labs-content-con-span"
-                ><u-icon name="checkmark-circle-fill" color="#54CB2F"></u-icon>{{ item.DeviceStatus === 0 ? '正常' : '异常' }}</span
-              >
+              <span class="labs-content-con-span">
+                <u-icon name="checkmark-circle-fill" v-if="item.DeviceStatus === 0" color="#54CB2F"/>
+                <u-icon name="error-circle-fill" v-else color="#FF3E3D"/>
+                {{ item.DeviceStatus === 0 ? '正常' : '异常' }}
+              </span>
             </div>
             <div class="labs-content-con-item">
               <span class="labs-content-con-label">门禁状态</span>
               <span class="labs-content-con-span">
-                <u-icon name="close-circle-fill" color="#999999"></u-icon>{{ item.IsOpen === 0 ? '关闭' : '开启' }}
+                <u-icon name="close-circle-fill" v-if="item.IsOpen === 0" color="#999999"/>
+                <u-icon name="checkmark-circle-fill" v-else color="#54CB2F"/>
+                {{ item.IsOpen === 0 ? '关闭' : '开启' }}
               </span>
             </div>
             <div class="labs-content-con-item">
@@ -66,11 +70,11 @@
             </div>
           </div>
           <div class="labs-no-ins" v-if="item.TaskStatus === 0">
-            <span class="labs-ins-btn" @click="handleAwaitClick">待巡检</span>
+            <span class="labs-ins-btn" @click="handleAwaitClick(item)">待巡检</span>
           </div>
         </div>
       </div>
-      <div class="labs-content-item">
+      <!-- <div class="labs-content-item">
         <div class="labs-content-item-content">
           <div class="labs-content-title clearfix">
             <div class="labs-already-ins">待巡检</div>
@@ -172,7 +176,7 @@
             <span class="labs-ins-btn" @click="handleAwaitClick">待巡检</span>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
   <u-modal :show="show" title="请选择" @cancel="show = false" @confirm="confirm" ref="uModal" showCancelButton>
@@ -204,7 +208,7 @@ import { onShow } from "@dcloudio/uni-app"
 import {labTitleIcon} from '@/static/icon'
 import {RunSuccess,RunError,LabStatus} from '@/static/icon'
 import { calculateDistance } from '@/utils/utils'
-import {getInspectionTask} from '@/api'
+import {getInspectionTask, submitInspection} from '@/api'
 import {timestampToTime} from '@/utils/utils'
 
 onShow(()=>{
@@ -267,7 +271,8 @@ const radioList = reactive([
 ]);
 const radioValue = ref('1')
 const textVal = ref('')
-const confirm = () => {
+const Id = ref()
+const confirm = async () => {
   if(radioValue.value === '2' && !textVal.value){
     uni.showToast({
       title: '请先输入异常信息' ,
@@ -275,10 +280,27 @@ const confirm = () => {
     })
     return
   }
-  show.value=false
+  uni.getLocation({
+    type: 'gcj02',
+    success: async function(res) {
+      const {longitude,latitude} = res
+      await submitInspection({
+        Id:Id.value,
+        CheckStatus:radioValue.value,
+        CheckErrorLog:textVal.value,
+        latitude,
+        longitude
+      })
+      show.value=false
+      getList()
+    },
+    fail: function(err) {
+    }
+  })
 }
-const handleAwaitClick = () => {
+const handleAwaitClick = (item) => {
   show.value = true
+  Id.value = item.Id
 }
 </script>
 

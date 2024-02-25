@@ -78,7 +78,14 @@
           "style": {
             "navigationBarTitleText": "完善个人信息"
           }
+        },{
+          "name": "newsDetails",
+          "path": "newsDetails/index",
+          "style": {
+            "navigationBarTitleText": "详情页"
+          }
         }
+
       ]
     },{
       "root": "indexPages",
