@@ -13,7 +13,7 @@
       </u--form>
     </div>
     <div class="login-btn">
-      <img :src="Login" @click="login" alt="">
+      <img class="login-btn-img" :src="Login" @click="login" alt="">
     </div>
   </view>
 </template>
@@ -115,8 +115,7 @@ const getToken = async (encryptedData,iv,code) => {
     margin: 77rpx auto 0;
     width: 653rpx;
     height: 133rpx;
-    image,
-    button {
+    .login-btn-img {
       display: block;
       width: 100%;
       height: 100%;

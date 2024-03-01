@@ -8,63 +8,66 @@
           <u-icon class="lab-time-down" name="arrow-down"></u-icon>
         </div>
       </u-sticky>
-      <div class="labs-content-item" v-for="item in formData" :key="item.Id">
-        <div class="labs-content-item-content">
-          <div class="labs-content-title">
-            <img class="labs-icon" :src="ApproveIcon" />
-            {{item.Name}}
-          </div>
-          <div class="labs-content-con">
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">授课年级</span>
-              <span class="labs-content-con-span"
-                >{{item.GradeNames}}</span
-              >
+      <div v-if="formData.length > 0">
+        <div class="labs-content-item" v-for="item in formData" :key="item.Id">
+          <div class="labs-content-item-content">
+            <div class="labs-content-title">
+              <img class="labs-icon" :src="ApproveIcon" />
+              {{item.Name}}
             </div>
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">学期</span>
-              <span class="labs-content-con-span">
-                {{semesterName}}
-              </span>
-            </div>
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">总学时</span>
-              <span class="labs-content-con-span">
-                {{item.Total_Hours}}
-              </span>
-            </div>
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">实验课时</span>
-              <span class="labs-content-con-span">
-                {{item.Experimental_Hours}}
-              </span>
-            </div>
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">已排课时</span>
-              <span class="labs-content-con-span">
-                {{item.Already_Hours}}
-              </span>
-            </div>
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">状态</span>
-              <span class="labs-content-con-span status-color">
-                {{item.ArrangeStatusKey}}
-              </span>
-            </div>
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">最近排课情况</span>
-              <span class="labs-content-con-span">
-                {{item.Date}} {{item.StartLesson}}{{item.EndLesson}} {{item.RoomCode}}
-              </span>
-            </div>
-            <div class="labs-content-con-item">
-              <div class="course-btn" @click="jumpSignature(item)">
-                学生代表签名
+            <div class="labs-content-con">
+              <div class="labs-content-con-item">
+                <span class="labs-content-con-label">授课年级</span>
+                <span class="labs-content-con-span"
+                  >{{item.GradeNames}}</span
+                >
+              </div>
+              <div class="labs-content-con-item">
+                <span class="labs-content-con-label">学期</span>
+                <span class="labs-content-con-span">
+                  {{semesterName}}
+                </span>
+              </div>
+              <div class="labs-content-con-item">
+                <span class="labs-content-con-label">总学时</span>
+                <span class="labs-content-con-span">
+                  {{item.Total_Hours}}
+                </span>
+              </div>
+              <div class="labs-content-con-item">
+                <span class="labs-content-con-label">实验课时</span>
+                <span class="labs-content-con-span">
+                  {{item.Experimental_Hours}}
+                </span>
+              </div>
+              <div class="labs-content-con-item">
+                <span class="labs-content-con-label">已排课时</span>
+                <span class="labs-content-con-span">
+                  {{item.Already_Hours}}
+                </span>
+              </div>
+              <div class="labs-content-con-item">
+                <span class="labs-content-con-label">状态</span>
+                <span class="labs-content-con-span status-color">
+                  {{item.ArrangeStatusKey}}
+                </span>
+              </div>
+              <div class="labs-content-con-item">
+                <span class="labs-content-con-label">最近排课情况</span>
+                <span class="labs-content-con-span">
+                  {{item.Date}} {{item.StartLesson}}{{item.EndLesson}} {{item.RoomCode}}
+                </span>
+              </div>
+              <div class="labs-content-con-item">
+                <div class="course-btn" @click="jumpSignature(item)">
+                  学生代表签名
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <Empty v-else/>
     </div>
   </div>
   <u-picker
@@ -84,13 +87,14 @@
 import {ref} from 'vue'
 import {ApproveIcon,labTimeIcon} from '@/static/icon'
 import {formatDate, isDateInRange} from '@/utils/utils'
+import Empty from '@/components/Empty/index.vue'
 import { getMyCourses, getSemesterAll } from '@/api';
 
 const show = ref(false);
 const columns = ref()
 const defaultIndex = ref()
 const semesterName = ref();
-const formData = ref();
+const formData = ref([]);
 
 onShow(()=>{
   init()

@@ -1,4 +1,5 @@
 {
+  "lazyCodeLoading": "requiredComponents",
   "easycom": {
     "autoscan": true,
 		"custom": {
@@ -53,17 +54,6 @@
   ],
   "subPackages": [
     {
-      "root": "pages/test",
-      "pages": [
-        {
-          "name": "test",
-          "path": "test",
-          "style": {
-            "navigationBarTitleText": "测试"
-          }
-        }
-      ]
-    },{
       "root": "userPages",
       "pages": [
         {

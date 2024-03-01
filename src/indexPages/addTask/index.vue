@@ -56,7 +56,6 @@
     </u--form>
     <img class="invite-btn" :src="TaskSure" @click="submit" />
   </div>
-
   <u-picker
     :show="studentShow"
     :close-on-click-overlay="true"
@@ -66,7 +65,7 @@
     @cancel="studentShow = false"
     @close="studentShow = false"
     @confirm="confirm"
-  ></u-picker>
+  />
   <Popup ref="sectionRef" @change="popupClassChange">
     <template #default>
       <div class="section-box">
@@ -144,7 +143,8 @@ const formModel = ref({
   TaskName:'',
   Content:'',
   UserId:'',
-  UserName:''
+  UserName:'',
+  Lesson:''
 });
 const rules = ref({
   "TaskName": {
@@ -232,6 +232,7 @@ const popupClassChange = () => {
           endLesson:item[2]
         }
       })
+      formModel.value.Lesson = '已选择'
       sectionRef.value.cancel();
     })
     .catch((errors) => {

@@ -62,7 +62,7 @@ const init = async () => {
   const res = await getOvertimeList({
     page,
     pagesize,
-    status:status.value
+    status:status.value || 0
   }) as any
   list.value = list.value.concat(res.data)
   total.value = res.totalCount

@@ -23,7 +23,9 @@ import { onMounted, ref } from 'vue';
 
 const Id = ref()
 const canvas = ref()
-onLoad((option)=>{
+let isAction = null
+onLoad((option:any)=>{
+  isAction = option.action
   Id.value = option.Id
 })
 
@@ -130,12 +132,20 @@ const autographClick = (type) => {
                             encoding: 'base64', //编码格式
                             success: async (res) => { //成功的回调
                               console.log('data:image/png;base64,' + res.data)
-                              await setStudentName({
-                                Id:Id.value,
-                                studentName:'data:image/png;base64,' + res.data
-                              })
+                              const studentName = 'data:image/png;base64,' + res.data
+                              if(!isAction){
+                                await setStudentName({
+                                  Id:Id.value,
+                                  studentName
+                                })
+                              }
                               uni.navigateBack({
-                                delta: 1 // 返回的页面数，默认为1，表示返回到上一个页面
+                                delta: 1, // 返回的页面数，默认为1，表示返回到上一个页面
+                                success: () => {
+                                  uni.$emit('getBaseUrl',{
+                                    current:studentName
+                                  })
+                                }
                               });
                             }
                           })

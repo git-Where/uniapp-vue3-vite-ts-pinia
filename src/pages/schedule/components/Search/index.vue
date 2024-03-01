@@ -153,7 +153,7 @@ const changeHandler = (e) => {
     .search-item-title {
       display: block;
       overflow: hidden;
-      width: 119rpx;
+      width: 100rpx;
       text-overflow: ellipsis;
       text-align: center;
       font-weight: 500;

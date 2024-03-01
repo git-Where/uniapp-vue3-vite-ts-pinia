@@ -1,7 +1,4 @@
 import { forward } from './router';
-import { getCommonParams } from '@/config/commonParams';
-import env from '@/config/env';
-import { hideLoading, showLoading } from '@/config/serviceLoading';
 import { Decrypt, Encrypt } from './secret';
 import { BaseUrl } from '@/config/app';
 import { API } from '@/api/login';
@@ -41,12 +38,14 @@ function baseRequest(
   url: string,
   data: {}
 ) {
-  showLoading(true);
+  uni.showLoading({
+    title: '加载中'
+  });
   console.log('token',uni.getStorageSync('token'))
   const token = uni.getStorageSync('token') || '';
   if(!token && url !== API.LOGIN){
     return uni.reLaunch({
-      url:'/pages/login/index'
+      url:'pages/login/index'
     })
   }
   return new Promise((resolve) => {
@@ -82,14 +81,14 @@ function baseRequest(
         }
       },
       fail: () => {
-        hideLoading();
+        uni.hideLoading();
         reject({
           errno: -1,
           errmsg: '网络不给力，请检查你的网络设置~'
         });
       },
       complete: (data) => {
-        hideLoading();
+        uni.hideLoading();
         console.log(data, '请求complete');
       }
     });

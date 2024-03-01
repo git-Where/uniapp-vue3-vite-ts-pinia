@@ -1,5 +1,5 @@
 <template>
-  <div class="content-box">
+  <div class="content-box" v-if="modelValue.length > 0">
     <div class="content-item" v-for="(item,index) in modelValue" :key="index">
       <div class="content-item-left">
         <div>
@@ -20,10 +20,12 @@
       </div>
     </div>
   </div>
+  <Empty v-else/>
 </template>
 
 <script setup lang="ts">
 import {CourseIcon,CourseUser} from '@/static/icon'
+import Empty from '@/components/Empty/index.vue'
 
 const props = defineProps({
   modelValue: {
@@ -31,7 +33,6 @@ const props = defineProps({
     default: () => []
   }
 })
-console.log(111,props.modelValue)
 </script>
 
 <style scoped lang="scss">

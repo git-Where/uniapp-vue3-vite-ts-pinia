@@ -91,8 +91,8 @@ function goTest() {
 
 const roleId = ref(systemInfos.Role_Id);
 console.log(roleId,33333333333)
-// TODO:要写后端返回的值 RoleList[roleId.value]
-const sortList = ref(RoleList[4])
+// TODO:要写后端返回的值 RoleList[roleId.value]   4
+const sortList = ref(RoleList[systemInfos.Role_Id])
 
 const statusHeight = ref(0)
 const navigationBarHeight = ref(0)
@@ -106,12 +106,11 @@ const navBg = ref(false)
 
 onShow(() => {
   const token = uni.getStorageSync('token') || '';
-  console.log('indextoken',token)
+  console.log('index111',token);
   if(!token){
-    console.log('1111',!token)
-    return uni.reLaunch({
-      url:'/pages/login/index'
-    })
+    // uni.reLaunch({
+    //   url:'/pages/login/index'
+    // })
   }else{
     init()
   }

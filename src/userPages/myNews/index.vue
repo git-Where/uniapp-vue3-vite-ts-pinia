@@ -43,6 +43,7 @@ const scrollH = ref(0)
 const noMore = ref(false)
 
 onShow(()=>{
+  list.value = []
   init()
   scrollHs()
 })

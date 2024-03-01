@@ -12,6 +12,8 @@ const API = {
   GetOvertimeList:'/Task/GetOvertimeList', // 加班任务审批列表
   AddOvertimeTasks:'/Task/AddOvertimeTasks', // 新建加班任务
   UserEdit:'/User/Edit', // 完善个人信息
+  WxLogOut:'/Account/WxLogOut', // 注销退出
+  GetLessonAll:'/Lesson/GetAll', // 获取每日课程的节次信息
 }
 
 export function getInspectionTask(data:any) {
@@ -54,4 +56,13 @@ export function addOvertimeTasks(data:any={}) {
 
 export function setUserInfo(data:any={}) {
   return http.post<any>(API.UserEdit, data);
+}
+
+
+export function setWxLogOut() {
+  return http.get<any>(API.WxLogOut, {});
+}
+
+export function getLessonAll() {
+  return http.get<any>(API.GetLessonAll, {});
 }

@@ -15,7 +15,7 @@ import {ref} from 'vue'
 import Search from './components/Search/index.vue'
 import Content from './components/Content/index.vue'
 import Tabs from '@/components/Tabs/index.vue'
-import {getBusinessList} from '@/api'
+import {getBusinessList, getLessonAll} from '@/api'
 const formData = ref({
   IsSearchMine:'1',
   IsSearchMineName:'本人课程',
@@ -29,9 +29,10 @@ const formData = ref({
 const classList = ref()
 const tabList = ref<any>([]);
 const listMap = ref({})
-onLoad((options:any)=>{
+onLoad(async (options:any)=>{
   formData.value.IsSearchMine = options.IsSearchMine || '1'
   formData.value.IsSearchMineName = options.IsSearchMine == 1 ? '本人课程' : '所有课程'
+  await getLessonAll()
 })
 const getList = async (val) => {
   const {IsSearchMine,SemesterId,weeks,LaboratoryId} = val

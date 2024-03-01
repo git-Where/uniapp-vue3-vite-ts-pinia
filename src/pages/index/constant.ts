@@ -2,13 +2,14 @@
 import {Icon1,Icon10,Icon11,Icon12,Icon13,Icon14,Icon15,Icon16,Icon2, Icon3, Icon4, Icon5, Icon6, Icon7, Icon8, Icon9} from '@/static/icon'
 
 /**
- * 0系统管理员，
- * 1教师，
- * 2普通学生，
- * 3值班学生
+ * 1系统管理员，
+ * 2教师，
+ * 7普通学生（协会会长），
+ * 4协会会长，
+ * 5值班学生
  * **/
 export const RoleList = {
-  0:[
+  1:[
     {
       name:'运行管理',
       subList:[
@@ -92,7 +93,7 @@ export const RoleList = {
       ]
     }
   ],
-  1:[
+  2:[
     {
       name:'预约管理',
       subList:[
@@ -120,7 +121,7 @@ export const RoleList = {
       ]
     }
   ],
-  2:[
+  7:[
     {
       name:'预约管理',
       subList:[
@@ -143,7 +144,30 @@ export const RoleList = {
       ]
     }
   ],
-  3:[
+  4:[
+    {
+      name:'预约管理',
+      subList:[
+        {
+          name:'实验室预约',
+          icon:Icon16,
+          url:'../../indexPages/labInvite/index'
+        }
+      ]
+    },
+    {
+      name:'课程管理',
+      subList:[
+        {
+          name:'我的课表',
+          icon:Icon6,
+          type:'tab',
+          url:'../schedule/index'
+        }
+      ]
+    }
+  ],
+  5:[
     {
       name:'运行管理',
       subList:[
@@ -206,7 +230,7 @@ export const RoleList = {
       ]
     }
   ],
-  4:[
+  6:[
     {
       name:'运行管理',
       subList:[

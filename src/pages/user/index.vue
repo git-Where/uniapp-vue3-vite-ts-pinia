@@ -36,6 +36,7 @@
 </template>
 
 <script setup lang="ts">
+import { getMessageList, setWxLogOut } from '@/api';
 import {IndexBg,InfoIcon,SignOutIcon} from '@/static/icon'
 import { navBarHeight } from '@/utils/navBarUtils';
 import { systemInfos } from '@/utils/utils';
@@ -44,23 +45,28 @@ const statusHeight = ref(0)
 const navigationBarHeight = ref(0)
 const systemInfoMap = ref(systemInfos)
 
-onShow(() => {
+onShow(async () => {
   const token = uni.getStorageSync('token') || '';
   if(!token){
     return uni.reLaunch({
       url:'/pages/login/index'
     })
   }else{
+    const res = await getMessageList({
+      page:1,pagesize:10000
+    }) as any
+    console.log(res.length)
+    const len =
     uni.setTabBarBadge({ //显示数字
       index: 2, //tabbar下标
-      text:'5'
+      text:res.length.toString()
     })
     init()
   }
 });
 
 const init = async () => {
-  const res = await navBarHeight()
+  const res = await navBarHeight() as any
   statusHeight.value = res.statusHeight*2
   navigationBarHeight.value = res.navigationBarHeight
 }
@@ -69,7 +75,8 @@ const goMyNews = (url) => {
     url:url
   });
 }
-const handleSignOut = () => {
+const handleSignOut = async () => {
+  await setWxLogOut()
   uni.clearStorage()
   uni.reLaunch({
     url:'/pages/login/index'

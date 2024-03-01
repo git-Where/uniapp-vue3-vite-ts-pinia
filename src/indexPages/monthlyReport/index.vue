@@ -128,6 +128,16 @@
     @close="show = false"
     @confirm="confirm"
   ></u-picker>
+
+<u-datetime-picker
+  :show="dateTimeShow"
+  v-model="dataTime"
+  mode="year-month"
+  :closeOnClickOverlay="true"
+  @close="dateTimeShow=false"
+  @cancel="dateTimeShow = false"
+  @confirm="confirm"
+  ></u-datetime-picker>
 </template>
 
 <script setup lang="ts">
@@ -136,6 +146,7 @@ import {InviteTitleIcon} from '@/static/icon'
 import { getDutyMonthlyReport, getSemesterAll, getStudentList } from "@/api";
 import { systemInfos } from "@/utils/utils";
 const show = ref(false);
+const dateTimeShow = ref(false)
 const columns:any = ref([]);
 const weeks= ref<any>([])
 const semesterId = ref()
@@ -187,6 +198,7 @@ const monthArray = [{
       Id:12
     }]
 
+const dataTime = ref()
 const roleId = ref(systemInfos.Role_Id);
 
 onLoad(()=>{

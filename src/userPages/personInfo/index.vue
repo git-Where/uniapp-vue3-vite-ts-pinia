@@ -32,15 +32,14 @@
             ></u-icon>
           </template>
         </u-form-item>
-        <u-form-item label="电子签名" prop="email" borderBottom @click="jump">
+        <u-form-item label="电子签名" prop="SignatureName" borderBottom @click="jump">
           <u--input
-            v-model="formModel.email"
+            v-model="formModel.SignatureName"
             disabled
             disabledColor="#ffffff"
             placeholder="辅助信息"
             border="none"
-
-          ></u--input>
+          />
           <template #right>
             <u-icon
               name="arrow-right"
@@ -63,7 +62,9 @@ const form = ref();
 const formModel = ref({
   NickName: "",
   EMAIL: "",
-  Id:systemInfos.Id
+  Id:systemInfos.Id,
+  Signature:'',
+  SignatureName:''
 });
 const rules = ref({
   "NickName": {
@@ -92,12 +93,28 @@ const rules = ref({
 		}
   ]
 });
+
+onLoad(()=>{
+  uni.$on('getBaseUrl', function(data) {
+		console.log('我在B页面选择了:', data);
+    formModel.value.Signature = data.current
+    formModel.value.SignatureName = '已签'
+	})
+})
+
 const submit = () => {
   form.value
     .validate()
     .then(async (res) => {
       console.log("校验通过", res);
-      await setUserInfo(formModel.value)
+      const {Signature,NickName,EMAIL} = formModel.value
+      await setUserInfo({
+        Signature,NickName,EMAIL
+      })
+      uni.navigateBack({
+        delta:1
+      })
+      uni.$off('getBaseUrl')
     })
     .catch((errors) => {
       console.log("校验失败");
@@ -106,7 +123,7 @@ const submit = () => {
 
 const jump = () => {
   uni.navigateTo({
-    url:'../../pages/signature/index'
+    url:'../../pages/signature/index?action=user'
   })
 }
 

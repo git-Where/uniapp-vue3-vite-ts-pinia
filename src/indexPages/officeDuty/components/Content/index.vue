@@ -1,5 +1,5 @@
 <template>
-  <div class="office-box">
+  <div class="office-box" v-if="list.length > 0">
     <div class="office-item" v-for="item in list" :key="item.Id">
       <div class="labs-content-title">
         <div>
@@ -25,15 +25,17 @@
       </div>
     </div>
   </div>
+  <Empty v-else/>
   <u-picker :show="show" :close-on-click-overlay="true" key-name="RealName" :columns="columns" @cancel="show = false" @close="show = false" @confirm="confirm" @change="changeHandler"></u-picker>
 </template>
 
 <script setup lang="ts">
 import {ref,reactive} from 'vue'
 import {labTitleIcon} from '@/static/icon'
+import Empty from '@/components/Empty/index.vue'
 import { getDutyCheckIn, getDutyList, getStudentList } from '@/api';
 
-const list = ref()
+const list = ref([])
 
 const show = ref(false);
 const columns = ref<any>([]);

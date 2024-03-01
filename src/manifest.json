@@ -1,6 +1,7 @@
 {
     "name" : "福大经管实验教学管理平台",
     "appid" : "wxd180602a078f0f39",
+    "libVersion": "3.1.5",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -55,6 +56,7 @@
         "setting" : {
             "urlCheck" : false
         },
+        "libVersion": "2.32.3",
         "usingComponents" : true,
         "permission":{
           "scope.userLocation":{

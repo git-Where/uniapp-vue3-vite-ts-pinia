@@ -6,34 +6,37 @@
         <span class="lab-time-span">{{ timestampToTime(dataTime,'1') }}</span>
         <u-icon class="lab-time-down" name="arrow-down"></u-icon>
       </div>
-      <div class="labs-content-item" v-for="(item,index) in list" :key="index">
-        <div class="labs-content-item-content">
-          <div class="labs-content-title">
-            <img class="labs-icon" :src="labTitleIcon" />
-            {{item.Begins}}
-          </div>
-          <div class="labs-content-con">
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">值班人员</span>
-              <span class="labs-content-con-span"
-                >{{item.Executive}}</span
-              >
+      <div v-if="list?.length > 0">
+        <div class="labs-content-item" v-for="(item,index) in list" :key="index">
+          <div class="labs-content-item-content">
+            <div class="labs-content-title">
+              <img class="labs-icon" :src="labTitleIcon" />
+              {{item.Begins}}
             </div>
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">签到状态</span>
-              <span class="labs-content-con-span">
-                {{status[item.TaskStatus]}}
-              </span>
-            </div>
-            <div class="labs-content-con-item">
-              <span class="labs-content-con-label">签到时间</span>
-              <span class="labs-content-con-span">
-                {{item.ExecutionTime}}
-              </span>
+            <div class="labs-content-con">
+              <div class="labs-content-con-item">
+                <span class="labs-content-con-label">值班人员</span>
+                <span class="labs-content-con-span"
+                  >{{item.Executive}}</span
+                >
+              </div>
+              <div class="labs-content-con-item">
+                <span class="labs-content-con-label">签到状态</span>
+                <span class="labs-content-con-span">
+                  {{status[item.TaskStatus]}}
+                </span>
+              </div>
+              <div class="labs-content-con-item">
+                <span class="labs-content-con-label">签到时间</span>
+                <span class="labs-content-con-span">
+                  {{item.ExecutionTime}}
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <Empty v-else/>
     </div>
   </div>
   <u-datetime-picker
@@ -51,6 +54,7 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import {labTitleIcon,labTimeIcon} from '@/static/icon'
+import Empty from '@/components/Empty/index.vue'
 import {timestampToTime} from '@/utils/utils'
 import {getDutyList} from '@/api'
 
@@ -61,7 +65,7 @@ const status = {
 
 const show = ref(false);
 const dataTime = ref(Date.now());
-const list = ref()
+const list = ref([])
 
 onShow(()=>{
   init()
