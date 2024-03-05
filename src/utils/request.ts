@@ -1,6 +1,7 @@
 import { forward } from './router';
 import { Decrypt, Encrypt } from './secret';
 import { BaseUrl } from '@/config/app';
+import {showLoading,hideLoading} from '@/config/serviceLoading'
 import { API } from '@/api/login';
 
 function reject(err: { errno: number; errmsg: string }) {
@@ -38,17 +39,9 @@ function baseRequest(
   url: string,
   data: {}
 ) {
-  uni.showLoading({
-    title: '加载中'
-  });
-  console.log('token',uni.getStorageSync('token'))
-  const token = uni.getStorageSync('token') || '';
-  if(!token && url !== API.LOGIN){
-    return uni.reLaunch({
-      url:'pages/login/index'
-    })
-  }
-  return new Promise((resolve) => {
+  showLoading(true)
+  return new Promise((resolve,reject) => {
+    const token = uni.getStorageSync('token') || '';
     console.log('请求的参数数据：',data)
     let _data:any = Object.keys(data).length > 0 ? {
       DataStr: Encrypt(JSON.stringify(data))
@@ -81,14 +74,13 @@ function baseRequest(
         }
       },
       fail: () => {
-        uni.hideLoading();
         reject({
           errno: -1,
           errmsg: '网络不给力，请检查你的网络设置~'
         });
       },
       complete: (data) => {
-        uni.hideLoading();
+        hideLoading();
         console.log(data, '请求complete');
       }
     });

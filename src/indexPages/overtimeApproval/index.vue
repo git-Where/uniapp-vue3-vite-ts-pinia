@@ -55,6 +55,8 @@ const tabs = ref([
 const list = ref<any>([])
 
 onShow(()=>{
+  list.value = []
+  total.value = 0
   init()
   scrollHs()
 })
@@ -81,6 +83,8 @@ const scrollHs = () => {
 }
 const tabClick = (item) => {
   status.value = item.id
+  list.value = []
+  total.value = 0
   init()
 }
 

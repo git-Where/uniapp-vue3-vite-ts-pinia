@@ -14,6 +14,8 @@ const API = {
   UserEdit:'/User/Edit', // 完善个人信息
   WxLogOut:'/Account/WxLogOut', // 注销退出
   GetLessonAll:'/Lesson/GetAll', // 获取每日课程的节次信息
+  GetTaskDetail:'/Task/GetTaskDetail', // 获取任务详情
+  CheckedOvertimeTask:'/Task/CheckedOvertimeTask', // 审核任务
 }
 
 export function getInspectionTask(data:any) {
@@ -65,4 +67,11 @@ export function setWxLogOut() {
 
 export function getLessonAll() {
   return http.get<any>(API.GetLessonAll, {});
+}
+export function getTaskDetail(data:any={}) {
+  return http.post<any>(API.GetTaskDetail, data);
+}
+
+export function checkedOvertimeTask(data:any={}) {
+  return http.post<any>(API.CheckedOvertimeTask, data);
 }

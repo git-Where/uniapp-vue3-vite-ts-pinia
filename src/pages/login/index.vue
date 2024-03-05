@@ -43,11 +43,13 @@ const login = async () => {
           const { encryptedData, iv } = res
           const token= await getToken(encryptedData,iv,code)
           uni.setStorageSync('token', token);
-          uni.switchTab({
-            url:'../index/index'
-          })
           const userInfo = await getUserInfo()
           uni.setStorageSync('userInfo', userInfo);
+          setTimeout(()=>{
+            uni.switchTab({
+              url:'../index/index'
+            })
+          },500)
         },
         fail: (err) => {
           console.log('err',err)

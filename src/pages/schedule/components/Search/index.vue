@@ -89,11 +89,11 @@ const getSemList = async () => {
 const getWeekList = (val) => {
   const beginTime = formatDate(val.Begin_Date).split(' ')[0]
   const endTime = formatDate(val.End_Date).split(' ')[0]
-  const weeks = getWeeks(beginTime,endTime)+1
-  const currentDate = getCurrentDate()
-  const current = getWeeks(beginTime,currentDate)+1
+  const weeks = getWeeks(beginTime,endTime)+1 // 总共有几周时间
+  const currentDate = getCurrentDate()// 获取当前时间年月日
+  const current = getWeeks(beginTime,currentDate)+1 // 计算当前时间在这个周期内属于第几周
   console.log('周数：',beginTime,endTime,currentDate,weeks,current)
-  formData.value.weeksName = `第${current}周`
+  formData.value.weeksName = `第${current || 1}周`
   formData.value.weeks = current
   for(let i = 0;i<weeks;i++){
     objMap.value.weeks.columns.push(

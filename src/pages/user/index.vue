@@ -39,18 +39,19 @@
 import { getMessageList, setWxLogOut } from '@/api';
 import {IndexBg,InfoIcon,SignOutIcon} from '@/static/icon'
 import { navBarHeight } from '@/utils/navBarUtils';
-import { systemInfos } from '@/utils/utils';
 
 const statusHeight = ref(0)
 const navigationBarHeight = ref(0)
-const systemInfoMap = ref(systemInfos)
+const systemInfoMap = ref()
 
 onShow(async () => {
   const token = uni.getStorageSync('token') || '';
+  const userInfo = uni.getStorageSync('userInfo') || {};
+  systemInfoMap.value = userInfo
   if(!token){
-    return uni.reLaunch({
-      url:'/pages/login/index'
-    })
+    // return uni.reLaunch({
+    //   url:'/pages/login/index'
+    // })
   }else{
     const res = await getMessageList({
       page:1,pagesize:10000
@@ -77,7 +78,9 @@ const goMyNews = (url) => {
 }
 const handleSignOut = async () => {
   await setWxLogOut()
-  uni.clearStorage()
+  uni.clearStorageSync()
+  // uni.removeStorageSync('token')
+  // uni.removeStorageSync('userInfo')
   uni.reLaunch({
     url:'/pages/login/index'
   })

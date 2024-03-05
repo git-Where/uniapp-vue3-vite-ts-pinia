@@ -7,8 +7,8 @@ onLaunch(() => {
 onShow(async () => {
   console.log('App Show');
 
-  const userInfo = await getUserInfo()
-  uni.setStorageSync('userInfo', userInfo);
+  // const userInfo = await getUserInfo()
+  // uni.setStorageSync('userInfo', userInfo);
 });
 onHide(() => {
   console.log('App Hide');

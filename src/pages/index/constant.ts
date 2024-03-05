@@ -2,6 +2,14 @@
 import {Icon1,Icon10,Icon11,Icon12,Icon13,Icon14,Icon15,Icon16,Icon2, Icon3, Icon4, Icon5, Icon6, Icon7, Icon8, Icon9} from '@/static/icon'
 
 /**
+ *旧：
+ * 0系统管理员，
+ * 1教师，
+ * 2普通学生，
+ * 3值班学生
+ *
+ *
+ *新：
  * 1系统管理员，
  * 2教师，
  * 7普通学生（协会会长），

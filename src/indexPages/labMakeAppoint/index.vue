@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="lab-make-appoint">
     <u-form labelPosition="left" :model="formData" :rules="rules" ref="form">
       <div class="form-title">
         <img class="form-title-icon" :src="InviteTitleIcon" alt="" />活动信息
@@ -381,6 +381,11 @@ const handleDayAdd = () => {
 page {
   height: 100%;
   background-color: $uni-bg-color-grey;
+}
+.lab-make-appoint {
+  .u-form-item__body {
+    padding: 30rpx 0 !important;
+  }
 }
 .form-title {
   padding: 30rpx 22rpx;

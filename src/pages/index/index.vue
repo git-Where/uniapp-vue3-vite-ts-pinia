@@ -47,7 +47,7 @@
           </div>
         </div>
       </div>
-      <div class="sort-box" v-if="roleId === 3">
+      <div class="sort-box" v-if="roleId === 5">
         <div class="sort-item">
           <div class="sort-item-title">
             <img class="sort-icon" :src="SortIcon" alt="">
@@ -75,24 +75,14 @@
 
 <script setup lang="ts">
 import { onShow } from '@dcloudio/uni-app';
-import { useTitle } from '@/hooks/useTitle';
-import { forward } from '@/utils/router';
-import {Banner,IndexBg,SortIcon,WakeUp, Icon1,Icon10,Icon11,Icon12,Icon13,Icon14,Icon15,Icon16,Icon2, Icon3, Icon4, Icon5, Icon6, Icon7, Icon8, Icon9} from '@/static/icon'
+import {Banner,IndexBg,SortIcon,WakeUp} from '@/static/icon'
 import { navBarHeight } from '@/utils/navBarUtils';
-import { systemInfos } from '@/utils/utils';
 import {RoleList} from './constant'
 
-const { title, changeTitle } = useTitle();
-function goTest() {
-  forward('test', {
-    a: 1
-  });
-}
 
-const roleId = ref(systemInfos.Role_Id);
-console.log(roleId,33333333333)
+const roleId = ref();
 // TODO:要写后端返回的值 RoleList[roleId.value]   4
-const sortList = ref(RoleList[systemInfos.Role_Id])
+const sortList = ref([])
 
 const statusHeight = ref(0)
 const navigationBarHeight = ref(0)
@@ -106,11 +96,14 @@ const navBg = ref(false)
 
 onShow(() => {
   const token = uni.getStorageSync('token') || '';
-  console.log('index111',token);
+  const userInfo = uni.getStorageSync('userInfo') || {};
+  console.log('userinfo',userInfo)
+  sortList.value = RoleList[userInfo.Role_Id]
+  roleId.value=userInfo.Role_Id
   if(!token){
-    // uni.reLaunch({
-    //   url:'/pages/login/index'
-    // })
+    uni.reLaunch({
+      url:'/pages/login/index'
+    })
   }else{
     init()
   }

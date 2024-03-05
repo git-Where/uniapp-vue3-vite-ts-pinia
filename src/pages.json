@@ -153,6 +153,14 @@
           }
         },
         {
+          "name": "overtimeApprovalDetails",
+          "path": "overtimeApprovalDetails/index",
+          "style": {
+            "navigationBarTitleText": "任务详情"
+          }
+        },
+
+        {
           "name": "addTask",
           "path": "addTask/index",
           "style": {

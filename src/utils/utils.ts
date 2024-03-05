@@ -47,6 +47,8 @@ export const timestampToTime = (timestamp,type) => {
     time = year + '年' + month + '月' + day + '日'
   }else if(type === '2'){
     time = year + '-' + month + '-' + day
+  }else if(type === '3'){
+    time = year + '-' + month
   }else{
     time = year + type + month + type + day + ' ' + hour + ':' + minute + ':' + second;
   }
@@ -83,10 +85,6 @@ export const calculateDistance = (location1, location2) =>{
 	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 	return earthRadius * c * 1000 // 换成米
 }
-
-// 获取用户信息
-export const systemInfos = uni.getStorageSync('userInfo') || {};
-
 
 // 2023-06-03T00:00:00 转时间格式
 function formatTen(num) {
@@ -163,7 +161,7 @@ export const getWeeks = (startDateStr, endDateStr) => {
   var start = new Date(startDateStr); // 创建起始日期对象
   var end = new Date(endDateStr); // 创建结束日期对象
 
-  var timeDiff = Math.abs(end - start); // 获取时间差（单位为毫秒）
+  var timeDiff = Math.abs(Number(end) - Number(start)); // 获取时间差（单位为毫秒）
   var daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)); // 转换成天数并向上取整
 
   return Math.floor(daysDiff / 7); // 返回周数
@@ -199,4 +197,11 @@ export const getCurrentDate = () => {
   const month = currentDate.getMonth() + 1; // 月份是从 0 开始计数的，因此要加1
   const day = currentDate.getDate();
   return `${year}-${month}-${day}`
+}
+
+export const getCurrentYearMonth = () => {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1; // 月份是从 0 开始计数的，因此要加1
+  return `${year}-${month > 9 ? month : '0' + month}`
 }

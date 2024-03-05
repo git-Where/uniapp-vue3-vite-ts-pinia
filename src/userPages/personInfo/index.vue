@@ -55,14 +55,13 @@
 <script setup lang="ts">
 import { setUserInfo } from '@/api';
 import {PersonSubmit} from '@/static/icon'
-import { systemInfos } from '@/utils/utils';
 import { ref } from "vue";
 
 const form = ref();
 const formModel = ref({
   NickName: "",
   EMAIL: "",
-  Id:systemInfos.Id,
+  Id:0,
   Signature:'',
   SignatureName:''
 });
@@ -100,6 +99,9 @@ onLoad(()=>{
     formModel.value.Signature = data.current
     formModel.value.SignatureName = '已签'
 	})
+
+  const userInfo = uni.getStorageSync('userInfo') || {};
+  formModel.value.Id = userInfo.Id
 })
 
 const submit = () => {

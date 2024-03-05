@@ -11,7 +11,7 @@
           <div class="approve-content-con-item">
             <span class="approve-content-con-label">时间</span>
             <span class="approve-content-con-span"
-              >2023学年14周3-4节</span
+              >{{item.lab}}</span
             >
           </div>
           <div class="approve-content-con-item">
@@ -20,7 +20,7 @@
               >{{ statusMap[item.status] }}</span
             >
           </div>
-          <div class="approve-content-con-item">
+          <div class="approve-content-con-item" @click="handleDetails(item.Id)">
             <div class="view-details">查看详情</div>
           </div>
         </div>
@@ -44,6 +44,12 @@ const statusMap = {
   0:'待审核',
   1:'已通过',
   2:'已拒绝'
+}
+
+const handleDetails = (id) => {
+  uni.navigateTo({
+    url:`/indexPages/overtimeApprovalDetails/index?id=${id}`
+  })
 }
 </script>
 

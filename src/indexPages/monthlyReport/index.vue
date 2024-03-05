@@ -2,17 +2,15 @@
   <div class="month-box">
     <u-sticky bgColor="#fff">
       <div class="search-box">
-        <div class="search-item" @click="pick('1')">
-          <span class="search-item-title">{{ semesterName }}</span
-          ><u-icon name="arrow-down"></u-icon>
+        <div class="search-item clearfix" @click="handleDateTime">
+          <u-icon name="arrow-down"></u-icon>
+          <span class="search-item-title h-line-1">{{ currentMonth || '请选择' }}</span
+          >
         </div>
-        <div class="search-item" @click="pick('2')">
-          <span class="search-item-title">{{ currentMonth }}月</span
-          ><u-icon name="arrow-down"></u-icon>
-        </div>
-        <div class="search-item" v-if="roleId === 0" @click="pick('3')">
-          <span class="search-item-title">{{ UserName || '请选择' }}</span
-          ><u-icon name="arrow-down"></u-icon>
+        <div class="search-item clearfix" v-if="roleId === 1"  @click="pick">
+          <u-icon name="arrow-down"></u-icon>
+          <span class="search-item-title h-line-1">{{ UserName || '请选择' }}</span
+          >
         </div>
       </div>
     </u-sticky>
@@ -123,7 +121,7 @@
     :close-on-click-overlay="true"
     :defaultIndex="defaultIndex"
     :columns="columns"
-    :key-name="keyName"
+    key-name="Name"
     @cancel="show = false"
     @close="show = false"
     @confirm="confirm"
@@ -136,86 +134,35 @@
   :closeOnClickOverlay="true"
   @close="dateTimeShow=false"
   @cancel="dateTimeShow = false"
-  @confirm="confirm"
+  @confirm="timeConfirm"
   ></u-datetime-picker>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import {InviteTitleIcon} from '@/static/icon'
-import { getDutyMonthlyReport, getSemesterAll, getStudentList } from "@/api";
-import { systemInfos } from "@/utils/utils";
+import { getDutyMonthlyReport, getStudentList } from "@/api";
+import { getCurrentYearMonth, timestampToTime } from "@/utils/utils";
 const show = ref(false);
 const dateTimeShow = ref(false)
 const columns:any = ref([]);
-const weeks= ref<any>([])
-const semesterId = ref()
-const semesterName = ref()
 const defaultIndex = ref([0])
 const list = ref()
 const studentParams = ref<any>([])
-const keyName = ref('Name')
-const currentMonth = ref()
+const currentMonth = ref(getCurrentYearMonth())
 const UserId = ref()
 const UserName = ref()
-const isType = ref()
 
-const monthArray = [{
-      Name:'1月',
-      Id:1
-    },{
-      Name:'2月',
-      Id:2
-    },{
-      Name:'3月',
-      Id:3
-    },{
-      Name:'4月',
-      Id:4
-    },{
-      Name:'5月',
-      Id:5
-    },{
-      Name:'6月',
-      Id:6
-    },{
-      Name:'7月',
-      Id:7
-    },{
-      Name:'8月',
-      Id:8
-    },{
-      Name:'9月',
-      Id:9
-    },{
-      Name:'10月',
-      Id:10
-    },{
-      Name:'11月',
-      Id:11
-    },{
-      Name:'12月',
-      Id:12
-    }]
-
-const dataTime = ref()
-const roleId = ref(systemInfos.Role_Id);
+const dataTime = ref(Date.now())
+const roleId = ref();
 
 onLoad(()=>{
   init()
+  const userInfo = uni.getStorageSync('userInfo') || {};
+  roleId.value = userInfo.Role_Id
 })
 
 const init = async () => {
-  // 获取学期
-  const res = await getSemesterAll()
-  weeks.value =  res
-  semesterName.value = res[0].Name
-  semesterId.value = res[0].Id
-
-  //学期
-  const date = new Date();
-  currentMonth.value = date.getMonth() + 1;
-
   // 学生
   const studentRes = await getStudentList({
     page:1,
@@ -230,47 +177,31 @@ const init = async () => {
 
 const initData = async () => {
   const resData = await getDutyMonthlyReport({
-    semesterId:semesterId.value,
     SearchMonthly:currentMonth.value,
     UserId:UserId.value
   })
   list.value = resData
 }
-
-const pick = (type:string) => {
-  keyName.value = 'Name'
-  isType.value = type
-  if(type==='1'){
-    columns.value = [weeks.value]
-    defaultIndex.value = [weeks.value.findIndex((item)=> item.Id === semesterId.value)]
-  }
-  if(type==='2'){
-    columns.value = [monthArray]
-    defaultIndex.value = [monthArray.findIndex((item)=> item.Id === currentMonth.value)]
-  }
-  if(type==='3'){
-    keyName.value = 'RealName'
-    columns.value = [studentParams.value]
-    defaultIndex.value = [studentParams.value.findIndex((item)=> item.Id === UserId.value)]
-  }
+const handleDateTime = () => {
+  dateTimeShow.value = true
+}
+const pick = () => {
+  columns.value = [studentParams.value]
+  defaultIndex.value = [studentParams.value.findIndex((item)=> item.Id === UserId.value)]
   show.value = true;
 };
 const confirm = (e) => {
   const val = e.value[0]
-  if(isType.value === '1'){
-    semesterName.value = val.Name
-    semesterId.value = val.Id
-  }
-  if(isType.value === '2'){
-    currentMonth.value = val.Id
-  }
-  if(isType.value === '3'){
-    UserId.value = val.Id
-    UserName.value = val.RealName
-  }
+  UserId.value = val.Id
+  UserName.value = val.RealName
   initData()
   show.value = false;
 };
+const timeConfirm = (e) => {
+  currentMonth.value = timestampToTime(e.value,'3')
+  initData()
+  dateTimeShow.value = false;
+}
 </script>
 
 <style lang="scss">
@@ -291,20 +222,24 @@ page {
     border-bottom: 1rpx solid #ececec;
     background: #fff;
     .search-item {
-      flex: auto;
       margin: 10rpx;
       padding: 0 24rpx;
       border-radius: 10rpx;
+      width: 200rpx;
       height: 66rpx;
       background: #f4f6f7;
       line-height: 66rpx;
-      text-align: center;
       .search-item-title {
         display: inline-block;
         padding-right: 10rpx;
+        width: 150rpx;
         font-weight: 500;
         font-size: 28rpx;
         color: #333;
+      }
+      .u-icon {
+        float: right;
+        margin-top: 16rpx;
       }
     }
   }

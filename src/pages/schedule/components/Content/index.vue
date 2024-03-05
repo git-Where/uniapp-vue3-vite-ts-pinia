@@ -27,7 +27,7 @@
 import {CourseIcon,CourseUser} from '@/static/icon'
 import Empty from '@/components/Empty/index.vue'
 
-const props = defineProps({
+defineProps({
   modelValue: {
     type: Object as PropType<any>,
     default: () => []
