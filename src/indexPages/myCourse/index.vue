@@ -17,6 +17,12 @@
             </div>
             <div class="labs-content-con">
               <div class="labs-content-con-item">
+                <span class="labs-content-con-label">指导老师</span>
+                <span class="labs-content-con-span"
+                  >{{item.GradeNames}}</span
+                >
+              </div>
+              <div class="labs-content-con-item">
                 <span class="labs-content-con-label">授课年级</span>
                 <span class="labs-content-con-span"
                   >{{item.GradeNames}}</span
@@ -55,12 +61,12 @@
               <div class="labs-content-con-item">
                 <span class="labs-content-con-label">最近排课情况</span>
                 <span class="labs-content-con-span">
-                  {{item.Date}} {{item.StartLesson}}{{item.EndLesson}} {{item.RoomCode}}
+                  {{formatDateDay(item.Date)}} {{item.StartLesson}}-{{item.EndLesson}}节  {{item.RoomCode}}
                 </span>
               </div>
               <div class="labs-content-con-item">
                 <div class="course-btn" @click="jumpSignature(item)">
-                  学生代表签名
+                  {{item.StudentName ? '已签名' : '学生代表签名'}}
                 </div>
               </div>
             </div>
@@ -86,7 +92,7 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import {ApproveIcon,labTimeIcon} from '@/static/icon'
-import {formatDate, isDateInRange} from '@/utils/utils'
+import {formatDate, isDateInRange,formatDateDay} from '@/utils/utils'
 import Empty from '@/components/Empty/index.vue'
 import { getMyCourses, getSemesterAll } from '@/api';
 
@@ -146,7 +152,6 @@ const jumpSignature = (item) => {
   uni.navigateTo({
     url:`../../pages/signature/index?Id=${item.Id}`
   })
-
 }
 </script>
 

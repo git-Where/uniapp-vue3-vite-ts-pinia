@@ -45,17 +45,27 @@
     ref="timePickerRef"
     :show="show"
     mode="time"
+    :minHour="minHour"
+    :maxHour="maxHour"
+    :minMinute="minMinute"
+    :maxMinute="maxMinute"
+    @cancel="show = false"
+    @close="show = false"
     @confirm="confirm"
 ></u-datetime-picker>
 <u-datetime-picker
   ref="datetimePickerRef"
   :show="dateTimeShow"
   mode="date"
+  :minDate="Date.now()"
+  @close="dateTimeShow = false"
+  @cancel="dateTimeShow = false"
   @confirm="dateConfirm"
 ></u-datetime-picker>
 </template>
 
 <script setup lang="ts">
+
 import { ref } from "vue";
 import Popup from "@/components/Popup/index.vue";
 import { timestampToTime } from "@/utils/utils";
@@ -73,7 +83,25 @@ const popupRef = ref();
 const show = ref(false);
 const timePickerRef = ref()
 const typeName = ref('')
+const minHour = ref(0)
+const maxHour = ref(23)
+const minMinute = ref(0)
+const maxMinute = ref(59)
 const handleTime = (type) => {
+  if(type === 'beginTime' && formData.value.endTime){ // 开始时间
+    const time = formData.value.endTime.split(':')
+    maxHour.value = Number(time[0])
+    maxMinute.value = Number(time[1])
+    minHour.value = 0
+    minMinute.value = 0
+  }
+  if(type === 'endTime' && formData.value.beginTime){// 结束时间
+    const time = formData.value.beginTime.split(':')
+    minHour.value = Number(time[0])
+    minMinute.value = Number(time[1])
+    maxHour.value = 23
+    maxMinute.value = 59
+  }
   show.value = true;
   typeName.value = type
 };
@@ -81,6 +109,14 @@ const handleDay = () => {
   dateTimeShow.value = true
 }
 const confirm = (val) => {
+  console.log('时间',val)
+  const judge = (typeName.value === 'beginTime' && val.value === formData.value.endTime) || (typeName.value === 'endTime' && val.value === formData.value.beginTime)
+  if(judge){
+    return uni.showToast({
+      title: '预约时间不可选择统一时间段,请重新选择' ,
+      icon: 'none'
+    })
+  }
   formData.value[typeName.value] = val.value
   show.value = false
 };
@@ -101,7 +137,9 @@ const popupChange = (val) => {
   popupRef.value.cancel()
 };
 const open = () => {
-  formData.value.time = ''
+  formData.value.beginTime = ''
+  formData.value.endTime = ''
+  formData.value.day = ''
   defaultIndex.value = [0,0,0,0,0]
   popupRef.value.open("bottom");
 };

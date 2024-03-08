@@ -38,7 +38,7 @@
           <up-input @change="(value)=>{formData.Phone = value}" :adjust-position="true" placeholder="请输入联系电话" border="none"/>
         </u-form-item>
         <u-form-item label="指导老师" labelWidth="85" required prop="Teacher" borderBottom
-          @click="popupTeachRef.open('bottom')">
+          @click="teachOpen">
           <up-input
             v-model="formData.Teacher"
             disabled
@@ -65,7 +65,7 @@
           labelWidth="85"
           prop="LaboratoryName"
           borderBottom
-          @click="popupLabRef.open('bottom')"
+          @click="labOpen"
         >
           <up-input
             v-model="formData.LaboratoryName"
@@ -108,7 +108,7 @@
       @confirm="confirm"
     />
   </div>
-  <Popup ref="popupTeachRef" @change="popupTeachChange">
+  <Popup ref="popupTeachRef" @change="popupTeachChange"  @cancel="teachCancel">
     <template #default>
       <div class="popup-box">
         <u-checkbox-group
@@ -128,7 +128,7 @@
       </div>
     </template>
   </Popup>
-  <Popup ref="popupLabRef" @change="popupLabChange">
+  <Popup ref="popupLabRef" @change="popupLabChange" @cancel="labCancel">
     <template #default>
       <div class="popup-box">
         <u-checkbox-group
@@ -299,23 +299,41 @@ const confirm = (e) => {
   form.value.validateField('TypeName')
   show.value = false
 }
-
+let teachIds = []
+const teachOpen = () => {
+  formData.value.TeacherId = teachIds
+  popupTeachRef.value.open()
+}
 const popupTeachChange = async () => {
   formData.value.Teacher = formData.value.TeacherId?.reduce((pre:any, cur:any)=>{
      pre.push(teachList.value.find((n)=>n.Id === cur).NickName)
      return pre
   },[]).join()
+  teachIds = formData.value.TeacherId
   popupTeachRef.value.cancel()
   form.value.validateField('Teacher')
 }
-
+let LaboratoryId = []
+const labOpen = async () => {
+  formData.value.Laboratory = LaboratoryId
+  popupLabRef.value.open()
+}
 const popupLabChange = () => {
   formData.value.LaboratoryName = formData.value.Laboratory?.reduce((pre:any, cur:any)=>{
      pre.push(labList.value.find((n)=>n.Id === cur).Name)
      return pre
   },[]).join()
+  LaboratoryId = formData.value.Laboratory
   popupLabRef.value.cancel()
   form.value.validateField('LaboratoryName')
+}
+
+const labCancel = ()=>{
+  formData.value.Laboratory = []
+}
+
+const teachCancel = () => {
+  formData.value.TeacherId = []
 }
 
 
@@ -327,7 +345,7 @@ const submit = async() => {
       icon: 'none'
     })
   }
-  formData.value.TeacherId = formData.value.TeacherId.join() as any
+  formData.value.TeacherId = typeof formData.value.TeacherId === 'string' ? formData.value.TeacherId : formData.value.TeacherId.join() as any
   const res = await addBusinessActivity(formData.value)
   const params = {
     ActivityId:res,

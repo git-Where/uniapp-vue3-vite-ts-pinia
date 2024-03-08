@@ -27,8 +27,8 @@
             >
           </div>
           <div class="approve-btn-box">
-            <div class="approve-btn-ope" v-if="item.OrderStatus === 1" @click="handleApprove(item)">审核</div>
-            <div class="approve-btn-cancel" v-if="item.OrderStatus === 0" @click="handleCancel(item)">取消</div>
+            <div class="approve-btn-ope" v-if="userInfo.Role_Id === 1" @click="handleApprove(item)">审核</div>
+            <div class="approve-btn-cancel" v-if="item.OrderStatus === 1" @click="handleCancel(item)">取消</div>
           </div>
         </div>
       </div>
@@ -54,9 +54,9 @@
       <div class="approve-cancel-box" v-else>
         <img class="approve-cancel-icon" :src="WarningIcon" />
         <div class="approve-cancel-text">
-          拒绝理由
+          {{isApprove ? '拒绝理由' : '取消理由'}}
         </div>
-        <u--textarea class="approve-cancel-textarea" v-model="textVal" placeholder="请输入拒绝理由..." ></u--textarea>
+        <u--textarea class="approve-cancel-textarea" v-model="textVal" :placeholder="`请输入${isApprove ? '拒绝理由' : '取消理由'}...`" />
       </div>
     </template>
   </u-modal>
@@ -73,6 +73,7 @@ const status ={
   2:'取消',
   3:'拒绝'
 }
+const userInfo = uni.getStorageSync('userInfo') || {};
 const props = defineProps({
   modelValue: {
     type: Array,
@@ -87,12 +88,14 @@ const isApprove = ref(true)
 const approveMap = ref({})
 
 const handleApprove = (item) => {
+  textVal.value = ''
   show.value = true;
   approveMap.value = item;
   isApprove.value = true;
 };
 
 const handleCancel = (item) => {
+  textVal.value = ''
   show.value = true;
   approveMap.value = item;
   isApprove.value = false;
@@ -191,6 +194,7 @@ const cancel = async () => {
         font-size: 30rpx;
       }
       .approve-btn-ope {
+        margin-right: 20rpx;
         background: #3d94ef;
         color: #fff;
       }

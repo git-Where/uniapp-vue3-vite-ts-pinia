@@ -1,8 +1,8 @@
 <template>
-  <uni-popup ref="popupRef" background-color="#fff" @change="change">
+  <uni-popup ref="popupRef" background-color="#fff">
     <div class="uni-popup-content">
       <div class="uni-popup-header clearfix">
-        <div class="uni-popup-cancel" @click="cancel">{{ cancelText }}</div>
+        <div class="uni-popup-cancel" @click="close">{{ cancelText }}</div>
         <div class="uni-popup-title" v-if="title">{{title || '标题'}}</div>
         <div class="uni-popup-confirm" @click="confirm">{{ confirmText }}</div>
       </div>
@@ -36,11 +36,13 @@ const props = defineProps({
 console.log('props',props)
 const popupRef = ref()
 const emit = defineEmits<{
-  'change': [val: any]
+  'change': [val: any],
+  'cancel': []
 }>()
-const change = (val) => {
-  // emit('change',val)
-  console.log(22222)
+
+const close = () => {
+  popupRef.value.close()
+  emit('cancel')
 }
 
 const cancel = () => {

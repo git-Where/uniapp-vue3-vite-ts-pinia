@@ -62,11 +62,20 @@ function baseRequest(
       header: header,
       data:_data,
       success: (res: any) => {
-        if(res.data.IsSuccess){
+        console.log(`res：`,res)
+        if(res.statusCode === 401){
+          uni.reLaunch({
+            url:'/pages/login/index'
+          })
+        }else if(res.data.IsSuccess){
           const resData = res.data.SuccessData ? JSON.parse(Decrypt(res.data.SuccessData)) : ''
           console.log(`${url}请求返回数据：`,resData)
           resolve(resData);
         }else{
+          uni.showToast({
+            icon:'none',
+            title: res.data.ErrorMessage
+          });
           reject({
             errno: -1,
             errmsg: res.data.ErrorMessage
@@ -74,13 +83,23 @@ function baseRequest(
         }
       },
       fail: () => {
+        uni.showToast({
+          icon:'none',
+          title: '网络不给力，请检查你的网络设置~'
+        });
         reject({
           errno: -1,
           errmsg: '网络不给力，请检查你的网络设置~'
         });
       },
-      complete: (data) => {
+      complete: (data:any) => {
         hideLoading();
+        if(data.statusCode !== 200){
+          uni.showToast({
+            icon:'none',
+            title: data.data.Message
+          });
+        }
         console.log(data, '请求complete');
       }
     });

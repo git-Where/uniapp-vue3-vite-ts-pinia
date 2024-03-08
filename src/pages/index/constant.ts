@@ -199,11 +199,11 @@ export const RoleList = {
     {
       name:'课程管理',
       subList:[
-        {
-          name:'我的课程',
-          icon:Icon5,
-          url:'../../indexPages/myCourse/index'
-        },
+        // {
+        //   name:'我的课程',
+        //   icon:Icon5,
+        //   url:'../../indexPages/myCourse/index'
+        // },
         {
           name:'我的课表',
           icon:Icon6,

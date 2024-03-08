@@ -20,7 +20,7 @@
             <div class="labs-already-ins" v-if="item.TaskStatus === 1">已巡检</div>
             <div>
               <img class="labs-icon" :src="labTitleIcon" />
-              {{item.Begins}}
+              {{item.Name}}
             </div>
           </div>
           <div class="labs-content-con">
@@ -29,7 +29,7 @@
             <div class="labs-content-con-item">
               <span class="labs-content-con-label">开课信息</span>
               <span class="labs-content-con-span"
-                >{{item.CourseInfo}}</span
+                >{{item.Begins}}</span
               >
             </div>
             <div class="labs-content-con-item">

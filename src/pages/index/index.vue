@@ -81,7 +81,6 @@ import {RoleList} from './constant'
 
 
 const roleId = ref();
-// TODO:要写后端返回的值 RoleList[roleId.value]   4
 const sortList = ref([])
 
 const statusHeight = ref(0)
@@ -98,6 +97,7 @@ onShow(() => {
   const token = uni.getStorageSync('token') || '';
   const userInfo = uni.getStorageSync('userInfo') || {};
   console.log('userinfo',userInfo)
+// TODO:要写后端返回的值 RoleList[userInfo.Role_Id]   6
   sortList.value = RoleList[userInfo.Role_Id]
   roleId.value=userInfo.Role_Id
   if(!token){

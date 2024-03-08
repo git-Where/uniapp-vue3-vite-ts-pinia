@@ -103,7 +103,7 @@ page {
 .invite-header-btn {
   display: block;
   margin: -90rpx auto 0;
-  width: 660rpx;
+  width: 560rpx;
   height: 96rpx;
 }
 .invite-divider {
@@ -111,8 +111,8 @@ page {
 }
 .invite-bg {
   display: block;
-  width: 100%;
-  height: 365rpx;
+  width: 750rpx;
+  height: 460rpx;
 }
 .index-box {
   position: relative;

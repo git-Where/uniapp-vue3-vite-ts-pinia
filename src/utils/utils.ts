@@ -100,6 +100,21 @@ export const formatDate = (dateTime) => {
   const second = date.getSeconds();
   return year + "-" + formatTen(month) + "-" + formatTen(day)+ " " +formatTen(hour)+ ":" +formatTen(minute)+ ":" +formatTen(second);
 }
+// 2023-06-03T00:00:00 转时间格式
+export const formatDateDay = (dateTime) => {
+  const date = new Date(dateTime)
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hours = new Date(dateTime).getHours();
+  let time = ''
+  if (hours < 12) {
+    time =  '上午'; // 早上
+  } else {
+    time =  '下午'; // 下午
+  }
+  return year + "年" + formatTen(month) + "月" + formatTen(day)+ "日 " + time;
+}
 
 // 判断当前日期是否在某个日期段
 export const isDateInRange = (startDateStr, endDateStr) => {
