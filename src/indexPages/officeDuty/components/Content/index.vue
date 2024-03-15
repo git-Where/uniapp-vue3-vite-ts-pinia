@@ -7,12 +7,12 @@
           {{item.Begins}}
         </div>
       </div>
-      <div class="office-already" v-if="item.TaskStatus === 1">
+      <div class="office-already" v-if="item.TaskStatus === 1 ||item.TaskStatus === 2">
         <span class="office-already-text">
           已签到
         </span>
-        <span class="office-already-to">
-          已签给{{item.SignTo}}
+        <span class="office-already-to" v-if="item.SignTo">
+          已签给{{item.SignTo }}
         </span>
       </div>
       <div class="office-sign" v-else>
@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref,reactive} from 'vue'
+import {ref} from 'vue'
 import {labTitleIcon} from '@/static/icon'
 import Empty from '@/components/Empty/index.vue'
 import { getDutyCheckIn, getDutyList, getStudentList } from '@/api';
@@ -74,7 +74,6 @@ const changeHandler = (e) => {
     picker
   } = e;
 }
-
 const handleSign = async (Id,UserId=0) => {
   uni.getLocation({
     type: 'gcj02',

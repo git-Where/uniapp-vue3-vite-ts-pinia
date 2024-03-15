@@ -50,14 +50,15 @@
     ref="uModal"
     :show="show"
     width="600rpx"
-    confirmText="确定"
+    :confirmText="isApprove? '通过':'确定'"
     :cancelText="isApprove ? '拒绝' : '取消'"
     :asyncClose="false"
     showConfirmButton
     showCancelButton
-    closeOnClickOverlay
+    :closeOnClickOverlay="isApprove"
     @confirm="confirm"
     @cancel="cancel"
+    @close="show = false"
   >
     <template #default>
       <div class="approve-modal-content" v-if="isApprove">

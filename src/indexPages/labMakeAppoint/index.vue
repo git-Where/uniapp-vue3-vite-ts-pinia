@@ -120,7 +120,7 @@
               activeColor="#2D9EFE"
               v-for="(item, index) in teachList"
               :key="index"
-              :label="item.NickName"
+              :label="item.RealName"
               :name="item.Id"
             >
             </u-checkbox>
@@ -306,7 +306,7 @@ const teachOpen = () => {
 }
 const popupTeachChange = async () => {
   formData.value.Teacher = formData.value.TeacherId?.reduce((pre:any, cur:any)=>{
-     pre.push(teachList.value.find((n)=>n.Id === cur).NickName)
+     pre.push(teachList.value.find((n)=>n.Id === cur).RealName)
      return pre
   },[]).join()
   teachIds = formData.value.TeacherId
@@ -336,6 +336,7 @@ const teachCancel = () => {
   formData.value.TeacherId = []
 }
 
+const activityId = ref('')
 
 const submit = async() => {
   await form.value.validate()
@@ -346,9 +347,11 @@ const submit = async() => {
     })
   }
   formData.value.TeacherId = typeof formData.value.TeacherId === 'string' ? formData.value.TeacherId : formData.value.TeacherId.join() as any
-  const res = await addBusinessActivity(formData.value)
+  if(!activityId.value){
+    activityId.value = await addBusinessActivity(formData.value)
+  }
   const params = {
-    ActivityId:res,
+    ActivityId:activityId.value,
     ScheduleList:dealDateFormatter()
   }
   const resData = await addBusinessBatch(params)

@@ -11,7 +11,7 @@
           <div class="approve-content-con-item">
             <span class="approve-content-con-label">时间</span>
             <span class="approve-content-con-span"
-              >{{item.lab}}</span
+              >{{item.time.replace('T',' ')}}</span
             >
           </div>
           <div class="approve-content-con-item">
@@ -43,7 +43,8 @@ defineProps({
 const statusMap = {
   0:'待审核',
   1:'已通过',
-  2:'已拒绝'
+  2:'已拒绝',
+  3:'已取消',
 }
 
 const handleDetails = (id) => {

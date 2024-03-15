@@ -22,7 +22,7 @@
           ></u--input>
         </u-form-item>
         <u-form-item
-          label="值班学生"
+          :label="userInfo.Role_Id === 5 ? '审核管理员' : '值班学生'"
           labelWidth="95"
           required
           prop="UserName"
@@ -36,14 +36,14 @@
             v-model="formModel.UserName"
             disabled
             disabledColor="#ffffff"
-            placeholder="请选择值班学生"
+            :placeholder="userInfo.Role_Id === 5 ? '请选择审核管理员' : '请选择值班学生'"
             border="none"
           ></u--input>
           <template #right>
             <u-icon name="arrow-right"></u-icon>
           </template>
         </u-form-item>
-        <u-form-item label="任务安排节次" labelWidth="95" prop="Lesson" borderBottom  @click="chooseSection">
+        <u-form-item label="任务安排节次" required labelWidth="95" prop="Lesson" borderBottom  @click="chooseSection">
           <u--input
             v-model="formModel.Lesson"
             disabled
@@ -137,6 +137,7 @@ import HoursPopup from "./component/HoursPopup/index.vue";
 import { addOvertimeTasks, getSemesterAll, getStudentList } from '@/api';
 import { formatDate, getWeeks } from '@/utils/utils';
 
+const userInfo = uni.getStorageSync('userInfo') || {};
 const form = ref();
 const showSex = ref(false);
 const formModel = ref({
@@ -157,6 +158,18 @@ const rules = ref({
     type: "string",
     required: true,
     message: "请输入任务内容",
+    trigger: ["blur", "change","triggers"],
+  },
+  "UserName": {
+    type: "string",
+    required: true,
+    message: `请选择${userInfo.Role_Id === 5 ? '审核管理员' : '值班学生'}`,
+    trigger: ["blur", "change","triggers"],
+  },
+  "Lesson": {
+    type: "string",
+    required: true,
+    message: `请选择任务安排节次`,
     trigger: ["blur", "change","triggers"],
   }
 });

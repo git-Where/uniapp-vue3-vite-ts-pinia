@@ -1,7 +1,7 @@
 <template>
   <view class="schedule-box">
     <u-sticky bgColor="#fff">
-      <Search v-model="formData"/>
+      <Search :model-value="formData" @update:ModelValue="updateModelValue"/>
       <div class="search-day" v-if="tabList.length > 0">
         <Tabs :tab-list="tabList" :line-height="3" :line-width="80" @tab-change="tabClick" />
       </div>
@@ -16,9 +16,34 @@ import Search from './components/Search/index.vue'
 import Content from './components/Content/index.vue'
 import Tabs from '@/components/Tabs/index.vue'
 import {getBusinessList, getLessonAll} from '@/api'
+// import {data} from './data'
+
+// const classMap = ['1-2','3-4','5-6','7-8','9-11']
+// data.forEach((item)=>{
+//   const {TeacherName,StartLesson = 0,EndLesson = 0,WeekDay,CourseName} = item
+//   classMap.forEach((n)=>{
+//     const numSplit = n.split('-')
+//     const startTime = numSplit[0]
+//     const endTime = numSplit[1]
+//     if((StartLesson >= startTime && EndLesson >= endTime) || EndLesson > endTime){
+
+//     }
+//   })
+// })
+
+
+
+
+
+
+
+
+
+
+
 const formData = ref({
-  IsSearchMine:'1',
-  IsSearchMineName:'本人课程',
+  IsSearchMine:'0',
+  IsSearchMineName:'所有课程',
   SemesterId:'',
   SemesterIdName:'',
   weeks:'',
@@ -30,7 +55,7 @@ const classList = ref()
 const tabList = ref<any>([]);
 const listMap = ref({})
 onLoad(async (options:any)=>{
-  formData.value.IsSearchMine = options.IsSearchMine || '1'
+  formData.value.IsSearchMine = options.IsSearchMine || '0'
   formData.value.IsSearchMineName = options.IsSearchMine == 1 ? '本人课程' : '所有课程'
   await getLessonAll()
 })
@@ -47,6 +72,7 @@ const getList = async (val) => {
   })
   if(res.data.length > 0){
     formatterData(res.data)
+    uni.setStorageSync('data',res.data)
   }else{
     tabList.value = []
     listMap.value = []
@@ -55,19 +81,27 @@ const getList = async (val) => {
 }
 const formatterData = (data) => {
   data.forEach((item)=>{
-    const {LaboratoryName,TeacherName,StartLesson,EndLesson,WeekDay} = item
-    if(Object.keys(listMap.value).includes(WeekDay)){ // 已经存在
+    const {TeacherName,StartLesson,EndLesson,WeekDay,CourseName} = item
+    if(Object.keys(listMap.value).includes(WeekDay)){ // 星期的数据已经存在
+      // classMap.forEach((n)=>{
+      //   const numSplit = n.split('-')
+      //   const startTime = numSplit[0]
+      //   const endTime = numSplit[1]
+      //   if((StartLesson >= startTime && EndLesson >= endTime) || EndLesson > endTime){
+
+      //   }
+      // })
       const index = listMap.value[WeekDay].findIndex((n)=>n.StartLesson === StartLesson && n.EndLesson === EndLesson)
       if(index >= 0){
         listMap.value[WeekDay][index].classList.push({
-          LaboratoryName,TeacherName
+          CourseName,TeacherName
         })
       }else{
         listMap.value[WeekDay].push({
           StartLesson,
           EndLesson,
           classList:[{
-            LaboratoryName,TeacherName
+            CourseName,TeacherName
           }]
         })
       }
@@ -78,7 +112,7 @@ const formatterData = (data) => {
           StartLesson,
           EndLesson,
           classList:[{
-            LaboratoryName,TeacherName
+            CourseName,TeacherName
           }]
         }
       )
@@ -109,19 +143,29 @@ const compareChineseNumber = (a, b) => {
     "四": 4,
     "五": 5,
     "六": 6,
+    "日": 7,
   };
 
   // 获取每个元素对应的阿拉伯数字并进行比较
   return chineseToArabic[a.name.slice(-1)] - chineseToArabic[b.name.slice(-1)];
 }
-watch(()=>formData.value,(val)=>{
+
+const updateModelValue = (val) => {
+  console.log('2222',val)
   listMap.value = {}
   tabList.value = []
   val.weeks && getList(val)
-},{
-  immediate:false,
-  deep:true
-})
+
+}
+
+// watch(()=>formData.value,(val)=>{
+//   listMap.value = {}
+//   tabList.value = []
+//   val.weeks && getList(val)
+// },{
+//   immediate:false,
+//   deep:true
+// })
 
 const tabClick = (val) => {
   classList.value = listMap.value[val.name]

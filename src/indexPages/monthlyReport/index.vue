@@ -121,7 +121,7 @@
     :close-on-click-overlay="true"
     :defaultIndex="defaultIndex"
     :columns="columns"
-    key-name="Name"
+    key-name="RealName"
     @cancel="show = false"
     @close="show = false"
     @confirm="confirm"
@@ -168,6 +168,7 @@ const init = async () => {
     page:1,
     pagesize:1000
   })
+  columns.value = [studentRes.data]
   studentParams.value = studentRes.data
   UserId.value = studentRes.data[0].Id
   UserName.value = studentRes.data[0].RealName
@@ -186,9 +187,9 @@ const handleDateTime = () => {
   dateTimeShow.value = true
 }
 const pick = () => {
-  columns.value = [studentParams.value]
-  defaultIndex.value = [studentParams.value.findIndex((item)=> item.Id === UserId.value)]
   show.value = true;
+  const index = studentParams.value.findIndex((item)=> item.Id === UserId.value)
+  defaultIndex.value = [index]
 };
 const confirm = (e) => {
   const val = e.value[0]

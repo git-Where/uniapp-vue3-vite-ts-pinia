@@ -6,7 +6,7 @@
         <div class="index-title" :style="{height:navigationBarHeight*2+'rpx',lineHeight:navigationBarHeight*2+'rpx'}">首页</div>
       </div>
     </div>
-    <scroll-view scroll-y="true" :style="{height:'100vh'}"  @scroll="onPageScroll">
+    <scroll-view scroll-y="true" :style="{height:'100vh',paddingBottom:'20rpx'}"  @scroll="onPageScroll">
       <img class="index-bg" :src="IndexBg" alt="">
       <div class="banner-swiper" :style="{marginTop:`-${350-(statusHeight+navigationBarHeight*2)}rpx`}">
         <u-swiper

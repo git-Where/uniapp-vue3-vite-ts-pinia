@@ -23,7 +23,7 @@
         <div class="labs-content-item-content">
           <div class="labs-content-title">
             <img class="labs-icon" :src="labTitleIcon" />
-            {{item.Begins}}
+            {{item.Name}}
           </div>
           <div class="labs-content-con">
             <div class="labs-content-con-item">

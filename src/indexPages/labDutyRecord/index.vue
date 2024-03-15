@@ -13,7 +13,7 @@
           @tab-change="tabClick" />
       </div>
     </u-sticky>
-    <div class="lab-content">
+    <div class="lab-content" v-if="formData.length>0">
       <div class="labs-content-item" v-for="(item,index) in formData" :key="index">
         <div class="labs-content-item-content">
           <div class="labs-content-title clearfix">
@@ -178,6 +178,7 @@
         </div>
       </div> -->
     </div>
+    <Empty v-else/>
   </div>
   <u-modal :show="show" title="请选择" @cancel="show = false" @confirm="confirm" ref="uModal" showCancelButton>
    <div class="lab-modal-radio">
@@ -207,6 +208,7 @@ import {ref} from 'vue'
 import { onShow } from "@dcloudio/uni-app"
 import {labTitleIcon} from '@/static/icon'
 import {RunSuccess,RunError,LabStatus} from '@/static/icon'
+import Empty from '@/components/Empty/index.vue'
 import { calculateDistance } from '@/utils/utils'
 import {getInspectionTask, submitInspection} from '@/api'
 import {timestampToTime} from '@/utils/utils'

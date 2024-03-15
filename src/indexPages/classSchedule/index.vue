@@ -174,11 +174,11 @@ page {
   }
   .class-item-room {
     float: left;
-    margin: 10rpx;
-    padding: 2rpx;
+    margin: 10rpx 6rpx 0;
+    padding: 4rpx;
     border-radius: 5rpx;
     width: 62rpx;
-    height: 40rpx;
+    height: 37rpx;
     background: #e5f1ff;
     font-size: 28rpx;
     color: #3d94ef;

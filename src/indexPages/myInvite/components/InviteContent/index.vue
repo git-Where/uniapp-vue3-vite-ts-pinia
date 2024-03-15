@@ -11,13 +11,13 @@
           <div class="approve-content-con-item">
             <span class="approve-content-con-label">预约日期</span>
             <span class="approve-content-con-span"
-              >{{formatDate(item.Date)}}</span
+              >{{formatDate(item.Date).split(' ')[0]}}</span
             >
           </div>
           <div class="approve-content-con-item">
             <span class="approve-content-con-label">预约时间</span>
             <span class="approve-content-con-span"
-              >{{formatDate(item.StartTime)}}</span
+              >{{formatDate(item.StartTime).split(' ')[1]}}-{{formatDate(item.EndTime).split(' ')[1]}}</span
             >
           </div>
           <div class="approve-content-con-item">
@@ -105,7 +105,7 @@ const confirm = async () => {
   await setBusinessStatus({
     Id:approveMap.value.Id,
     Status:isApprove.value ? 0 : 3,
-    RefuseReason:isApprove.value ? textVal.value : ''
+    RefuseReason:textVal.value || ''
   })
   emit('getList')
   show.value = false;

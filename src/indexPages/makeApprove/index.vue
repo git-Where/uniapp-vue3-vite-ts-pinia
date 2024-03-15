@@ -19,7 +19,7 @@
       </div>
     </u-sticky>
     <div class="approve-content">
-      <ApproveContent v-model="formData" @getList="init"/>
+      <ApproveContent v-model="formData" @getList="()=>{formData = [];init()}"/>
     </div>
   <div v-if="totalNum !== formData.length" class="load-more" @click="more">点击加载更多</div>
   <div v-else class="load-more">到底了</div>
@@ -61,6 +61,7 @@ const formData = ref([])
 const totalNum = ref(0)
 const keyword = ref('')
 onShow(async ()=>{
+  formData.value = []
   init()
 })
 
@@ -91,6 +92,7 @@ const tabClick = (item) => {
 }
 const search = (res) => {
   keyword.value = res.value
+  formData.value = []
   init()
 }
 

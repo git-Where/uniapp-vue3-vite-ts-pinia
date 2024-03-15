@@ -63,29 +63,31 @@ function baseRequest(
       data:_data,
       success: (res: any) => {
         console.log(`res：`,res)
-        if(res.statusCode === 401){
+        if(res?.statusCode === 401){
           uni.reLaunch({
             url:'/pages/login/index'
           })
-        }else if(res.data.IsSuccess){
-          const resData = res.data.SuccessData ? JSON.parse(Decrypt(res.data.SuccessData)) : ''
+        }else if(res?.data?.IsSuccess){
+          const resData = res?.data?.SuccessData ? JSON.parse(Decrypt(res?.data?.SuccessData)) : ''
           console.log(`${url}请求返回数据：`,resData)
           resolve(resData);
         }else{
           uni.showToast({
             icon:'none',
-            title: res.data.ErrorMessage
+            title: res?.data?.ErrorMessage || '网络不给力，请检查你的网络设置~',
+            duration:2000
           });
           reject({
-            errno: -1,
-            errmsg: res.data.ErrorMessage
+            errno: res?.statusCode,
+            errmsg: res?.data?.ErrorMessage || '网络不给力，请检查你的网络设置~'
           });
         }
       },
-      fail: () => {
+      fail: (error) => {
         uni.showToast({
           icon:'none',
-          title: '网络不给力，请检查你的网络设置~'
+          title: '网络不给力，请检查你的网络设置~',
+          duration:2000
         });
         reject({
           errno: -1,
@@ -94,12 +96,20 @@ function baseRequest(
       },
       complete: (data:any) => {
         hideLoading();
-        if(data.statusCode !== 200){
+        if(data?.statusCode !== 200){
           uni.showToast({
             icon:'none',
-            title: data.data.Message
+            title: data?.data?.Message || '网络不给力，请稍后重试~',
+            duration:2000
           });
         }
+        // else{
+        //   uni.showToast({
+        //     icon:'none',
+        //     title: data?.data?.Message || '',
+        //     duration:2000
+        //   });
+        // }
         console.log(data, '请求complete');
       }
     });

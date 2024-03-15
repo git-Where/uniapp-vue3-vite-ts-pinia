@@ -141,6 +141,10 @@ const open = () => {
   formData.value.endTime = ''
   formData.value.day = ''
   defaultIndex.value = [0,0,0,0,0]
+  minHour.value = 0
+  maxHour.value = 23
+  minMinute.value = 0
+  maxMinute.value = 59
   popupRef.value.open("bottom");
 };
 defineExpose({

@@ -77,13 +77,13 @@ const goMyNews = (url) => {
   });
 }
 const handleSignOut = async () => {
+  uni.reLaunch({
+    url:'/pages/login/index'
+  })
   await setWxLogOut()
   uni.clearStorageSync()
   // uni.removeStorageSync('token')
   // uni.removeStorageSync('userInfo')
-  uni.reLaunch({
-    url:'/pages/login/index'
-  })
 }
 </script>
 
