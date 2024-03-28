@@ -30,7 +30,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import {ApproveIcon} from '@/static/icon'
 
 defineProps({

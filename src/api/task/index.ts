@@ -16,6 +16,7 @@ const API = {
   GetLessonAll:'/Lesson/GetAll', // 获取每日课程的节次信息
   GetTaskDetail:'/Task/GetTaskDetail', // 获取任务详情
   CheckedOvertimeTask:'/Task/CheckedOvertimeTask', // 审核任务
+  GetTodayTasks:'/BusinessDutyTask/GetTodayTasks', // 获取今日任务列表
 }
 
 export function getInspectionTask(data:any) {
@@ -74,4 +75,7 @@ export function getTaskDetail(data:any={}) {
 
 export function checkedOvertimeTask(data:any={}) {
   return http.post<any>(API.CheckedOvertimeTask, data);
+}
+export function getTodayTasks() {
+  return http.get<any>(API.GetTodayTasks, {});
 }

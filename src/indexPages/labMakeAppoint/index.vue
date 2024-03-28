@@ -140,7 +140,7 @@
               activeColor="#2D9EFE"
               v-for="(item, index) in labList"
               :key="index"
-              :label="item.Name"
+              :label="'['+item.RoomCode+']'+item.Name"
               :name="item.Id"
             >
             </u-checkbox>

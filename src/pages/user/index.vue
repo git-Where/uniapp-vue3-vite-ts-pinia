@@ -21,7 +21,7 @@
         <div class="my-content-item" @click="goMyNews('../../userPages/myNews/index')">
           <img class="my-content-item-icon" :src="InfoIcon" alt="" />
           <div class="my-content-item-title">
-            消息
+            <up-badge numberType="overflow" type="error" :style="{top: '20rpx',left:'100rpx'}" absolute showZero :value="badgeNum"/>消息
           </div>
         </div>
         <div class="my-content-item" @click="handleSignOut">
@@ -36,34 +36,21 @@
 </template>
 
 <script setup lang="ts">
-import { getMessageList, setWxLogOut } from '@/api';
+import { getUnReadNum, setWxLogOut } from '@/api';
 import {IndexBg,InfoIcon,SignOutIcon} from '@/static/icon'
 import { navBarHeight } from '@/utils/navBarUtils';
 
 const statusHeight = ref(0)
 const navigationBarHeight = ref(0)
 const systemInfoMap = ref()
+const badgeNum = ref(0)
 
 onShow(async () => {
-  const token = uni.getStorageSync('token') || '';
   const userInfo = uni.getStorageSync('userInfo') || {};
   systemInfoMap.value = userInfo
-  if(!token){
-    // return uni.reLaunch({
-    //   url:'/pages/login/index'
-    // })
-  }else{
-    const res = await getMessageList({
-      page:1,pagesize:10000
-    }) as any
-    console.log(res.length)
-    const len =
-    uni.setTabBarBadge({ //显示数字
-      index: 2, //tabbar下标
-      text:res.length.toString()
-    })
-    init()
-  }
+  init()
+  const res = await getUnReadNum()
+  badgeNum.value = res
 });
 
 const init = async () => {
@@ -82,8 +69,6 @@ const handleSignOut = async () => {
   })
   await setWxLogOut()
   uni.clearStorageSync()
-  // uni.removeStorageSync('token')
-  // uni.removeStorageSync('userInfo')
 }
 </script>
 
@@ -91,6 +76,12 @@ const handleSignOut = async () => {
 page {
   height: 100%;
   background-color: $uni-bg-color-grey;
+}
+:deep() {
+  .u-badge {
+    left: 140rpx !important;
+    top: 30rpx !important;
+  }
 }
 .content {
   .index-bg {
@@ -147,8 +138,12 @@ page {
     background: #fff;
     .my-content-item {
       display: flex;
-      padding: 40rpx 10rpx;
+      position: relative;
+      align-items: center;
+      padding: 0 10rpx;
       border-bottom: 1rpx solid #e7e7e7;
+      height: 140rpx;
+      line-height: 140rpx;
       &:last-child {
         border-bottom: none;
       }

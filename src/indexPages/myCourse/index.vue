@@ -19,7 +19,7 @@
               <div class="labs-content-con-item">
                 <span class="labs-content-con-label">指导老师</span>
                 <span class="labs-content-con-span"
-                  >{{item.GradeNames}}</span
+                  >{{item.TeacherName}}</span
                 >
               </div>
               <div class="labs-content-con-item">

@@ -11,7 +11,7 @@
           <div class="approve-content-con-item">
             <span class="approve-content-con-label">预约时间</span>
             <span class="approve-content-con-span"
-              >{{formatDate(item.Date)}}</span
+              >{{formatDate(item.Date).split(' ')[0]}} {{formatDate(item.StartTime).split(' ')[1]}}-{{formatDate(item.EndTime).split(' ')[1]}}</span
             >
           </div>
           <div class="approve-content-con-item">
@@ -29,7 +29,7 @@
           <div class="approve-content-con-item">
             <span class="approve-content-con-label">联系电话</span>
             <span class="approve-content-con-span"
-              >{{item.ActivityName}}</span
+              >{{item.Phone}}</span
             >
           </div>
           <div class="approve-content-con-item">
@@ -67,9 +67,9 @@
       <div class="approve-cancel-box" v-else>
         <img class="approve-cancel-icon" :src="WarningIcon" />
         <div class="approve-cancel-text">
-          拒绝理由
+          取消理由
         </div>
-        <u--textarea class="approve-cancel-textarea" v-model="textVal" placeholder="请输入拒绝理由..." ></u--textarea>
+        <u--textarea class="approve-cancel-textarea" v-model="textVal" placeholder="请输入取消理由..." ></u--textarea>
       </div>
     </template>
   </u-modal>
@@ -109,7 +109,7 @@ const handleCancel = (item) => {
 const confirm = async () => {
   await setBusinessStatus({
     Id:approveMap.value.Id,
-    Status:isApprove.value ? 0 : 3,
+    Status:isApprove.value ? 0 : 2,
     RefuseReason:isApprove.value ? textVal.value : ''
   })
   emit('getList')

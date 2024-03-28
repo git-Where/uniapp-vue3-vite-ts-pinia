@@ -37,7 +37,7 @@
           <div class="condition-open-door" @click="handleOpen(item)">{{IsOpenMap[item.IsOpen]}}</div>
           <div class="condition-item-classroom">
             <img class="condition-classroom-img" :src="imgBaseUrl+item.Img" alt=""/>
-            <span class="condition-classroom-name u-line-1" >{{item.Name}}</span>
+            <span class="condition-classroom-name u-line-1" >[{{item.RoomCode}}]{{item.Name}}</span>
           </div>
         </div>
         <div class="condition-item-status">
@@ -67,6 +67,7 @@
       {{showContent}}
     </view>
   </u-modal>
+  <u-modal :show="openShow" title="提醒" showCancelButton @confirm="openConfirm" @cancel="openShow=false" @close="openShow=false" ref="uModal" content="是否确认进行该操作？" :asyncClose="true"></u-modal>
 </template>
 
 <script setup lang="ts">
@@ -97,15 +98,22 @@ const init = async () => {
   const res = await getRunStatus()
   formData.value = res
 }
+const openShow = ref(false)
+let rowData = null
 const handleOpen = async (row) => {
+  rowData = row
+  openShow.value = true
+}
+const openConfirm = async () => {
   await laboratoryEdit({
-    Id:row.Id,
-    IsOpen:!row.IsOpen
+    Id:rowData.Id,
+    IsOpen:!rowData.IsOpen
   })
   uni.showToast({
-    title: IsOpenMap.value[row.IsOpen]+'成功',
+    title: IsOpenMap.value[rowData.IsOpen]+'成功',
     icon: 'none'
   })
+  openShow.value = false
   init()
 }
 const handleStatus = (row) => {
@@ -235,7 +243,7 @@ page {
   .condition-status-label {
     display: inline-block;
     padding-right: 75rpx;
-    width: 148rpx;
+    width: 150rpx;
     font-size: 30rpx;
     color: #666;
   }

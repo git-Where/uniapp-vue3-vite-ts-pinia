@@ -2,16 +2,12 @@
   <div class="class-schedule">
     <div class="class-item" v-for="(item,index) in list" :key="index">
       <div class="class-item-left">
-        <img class="class-item-img" :src="item.icon" />
+        <img class="class-item-img" :src="imgBaseUrl+item.imgUrl" />
       </div>
-      <div class="class-item-right">
+      <div class="class-item-content">
         <div class="class-item-title clearfix">
-          <div class="class-item-button ">
-            <up-button v-if="item.laboratorys?.length === 0" class="class-item-btn" type="primary" :plain="true" text="选择实验室" @click="chooseLab(item)"/>
-            <div v-else class="class-item-btn class-room u-line-1" @click="chooseLab(item)">
-              <span class="class-item-room u-line-1" v-for="n in item.laboratorys" :key="n.Id">{{ n.name }}</span>
-            </div>
-          </div>
+
+
           {{item.SceneName}}
         </div>
         <div class="class-item-status">
@@ -30,6 +26,15 @@
           {{item.Describe}}
         </div>
       </div>
+      <div class="class-item-right">
+        <div class="class-item-button ">
+          <up-button v-if="item.laboratorys?.length === 0" class="class-item-btn" type="primary" :plain="true" text="选择实验室" @click="chooseLab(item)"/>
+          <div v-else class="class-item-btn class-room" @click="chooseLab(item)">
+            <span class="class-item-room" v-for="n in item.laboratorys" :key="n.Id">{{ n.name }}</span>
+          </div>
+          <up-button class="class-item-btn class-now" type="primary" :plain="false" text="立即执行" @click="rightNow(item)"/>
+        </div>
+      </div>
     </div>
   </div>
   <Popup ref="popupRef" @change="popupChange">
@@ -45,7 +50,7 @@
               activeColor="#2D9EFE"
               v-for="(item, index) in labList"
               :key="index"
-              :label="item.Name"
+              :label="'['+item.RoomCode +']' + item.Name"
               :name="item.Id"
             >
             </u-checkbox>
@@ -59,6 +64,7 @@
 import {ClassIcon1,ClassIcon2,ClassIcon3,ClassIcon4,ClassIcon5,ClassIcon6} from '@/static/icon'
 import Popup from '@/components/Popup/index.vue'
 import { getDict, getLabAll, getScene, setSenceEdit, setSenceLabRep } from '@/api';
+import {imgBaseUrl} from '@/config/app'
 
 
 const popupRef = ref()
@@ -120,6 +126,10 @@ const chooseLab = (itemData:any = []) => {
   popupRef.value.open('bottom')
 }
 
+const rightNow = (item) => {
+
+}
+
 const popupChange = async () => {
   await setSenceLabRep({
     SenceId:SenceId.value,
@@ -164,24 +174,43 @@ page {
       height: 100%;
     }
   }
-  .class-item-right {
+  .class-item-content {
     flex: 1;
   }
+  .class-item-right {
+    display: block;
+    width: 150rpx;
+  }
   .class-room {
+    display: flex;
+    overflow: hidden;
     border: 1rpx solid #3c9cff;
     border-radius: 8rpx;
     height: 62rpx;
+    -webkit-line-clamp: 1;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    white-space: nowrap;
+    -webkit-box-orient: vertical !important;
   }
   .class-item-room {
-    float: left;
+    display: none;
+    overflow: hidden;
     margin: 10rpx 6rpx 0;
     padding: 4rpx;
     border-radius: 5rpx;
-    width: 62rpx;
+    max-width: initial;
     height: 37rpx;
     background: #e5f1ff;
+    text-overflow: ellipsis;
     font-size: 28rpx;
     color: #3d94ef;
+    white-space: nowrap;
+    &:first-child,
+    &:nth-child(2) {
+      display: block;
+      flex: 1;
+    }
   }
   .class-item-title {
     font-weight: 500;
@@ -200,6 +229,9 @@ page {
       border-radius: 10rpx;
       width: 170rpx;
       height: 58rpx;
+      &:last-child {
+        margin-top: 20rpx;
+      }
     }
   }
   .class-item-status,

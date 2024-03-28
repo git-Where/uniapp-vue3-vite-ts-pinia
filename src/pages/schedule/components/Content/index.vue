@@ -12,9 +12,18 @@
       <div class="content-item-right">
         <div>
           <div class="content-item-right-text" v-for="(n,i) in item.classList" :key="i">
-            <span class="content-item-title">{{ n.CourseName }}</span>
-            <img class="content-item-user-img" :src="CourseUser"/>
-            <span class="content-item-user-name">{{ n.TeacherName }}</span>
+            <div v-if="n.ActivityId > 0">
+              <span class="content-item-user-name">[{{ n.LaboratoryName }}]</span>
+              <span class="content-item-title">{{ n.ActivityName }}</span>
+              <img class="content-item-user-img" :src="CourseUser"/>
+              <span class="content-item-user-name">{{ n.Teacher }}</span>
+            </div>
+            <div v-else>
+              <span class="content-item-user-name">[{{ n.LaboratoryName }}]</span>
+              <span class="content-item-title">{{ n.CourseName }}</span>
+              <img class="content-item-user-img" :src="CourseUser"/>
+              <span class="content-item-user-name">{{ n.Teacher }}</span>
+            </div>
           </div>
         </div>
       </div>

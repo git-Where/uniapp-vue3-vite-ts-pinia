@@ -38,7 +38,7 @@ import { onShow } from "@dcloudio/uni-app"
 import {InviteIcon,InviteBg} from '@/static/icon'
 import InviteContent from '../myInvite/components/InviteContent/index.vue'
 import { navBarHeight } from '@/utils/navBarUtils';
-import { getBusinessList } from '@/api/business';
+import { getBusinessList,getBusinessMyList } from '@/api/business';
 
 const statusHeight = ref(0)
 const navigationBarHeight = ref(0)
@@ -78,9 +78,30 @@ const tabClick = (item) => {
   page.value = 1
   getList()
 }
+const fetchApi = {
+  2:{
+    fetch:getBusinessMyList
+  },
+  5:{
+    fetch:getBusinessMyList
+  },
+  1:{
+    fetch:getBusinessList
+  },
+  4:{
+    fetch:getBusinessList
+  },
+  7:{
+    fetch:getBusinessList
+  },
+}
+let fetchConfig = null
 onShow(() => {
+  const userInfo = uni.getStorageSync('userInfo') || {};
+  fetchConfig = fetchApi[userInfo.Role_Id]
   init()
   getList()
+
 });
 
 const init = async () => {
@@ -89,7 +110,7 @@ const init = async () => {
   navigationBarHeight.value = res.navigationBarHeight
 }
 const getList = async () => {
-  const res:any = await getBusinessList({
+  const res:any = await fetchConfig.fetch({
     page:page.value,
     pagesize:10,
     modaltype:2,

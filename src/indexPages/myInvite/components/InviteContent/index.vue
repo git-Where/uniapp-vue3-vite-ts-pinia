@@ -21,14 +21,21 @@
             >
           </div>
           <div class="approve-content-con-item">
+            <span class="approve-content-con-label">联系电话</span>
+            <span class="approve-content-con-span"
+              >{{item.Phone}}</span
+            >
+          </div>
+          <div class="approve-content-con-item">
             <span class="approve-content-con-label">状态</span>
             <span class="approve-content-con-span status-color"
               >{{status[item.OrderStatus]}}</span
             >
           </div>
           <div class="approve-btn-box">
-            <div class="approve-btn-ope" v-if="userInfo.Role_Id === 1" @click="handleApprove(item)">审核</div>
-            <div class="approve-btn-cancel" v-if="item.OrderStatus === 1" @click="handleCancel(item)">取消</div>
+            <div class="approve-btn-ope" v-if="userInfo.Role_Id === 1 && item.OrderStatus === 1" @click="handleApprove(item)">审核</div>
+            <!-- <div class="approve-btn-cancel" v-if="item.OrderStatus === 1" @click="handleCancel(item)">取消</div> -->
+            <div class="approve-btn-cancel" @click="handleCancel(item)">取消</div>
           </div>
         </div>
       </div>
@@ -104,7 +111,7 @@ const handleCancel = (item) => {
 const confirm = async () => {
   await setBusinessStatus({
     Id:approveMap.value.Id,
-    Status:isApprove.value ? 0 : 3,
+    Status:isApprove.value ? 0 : 2,
     RefuseReason:textVal.value || ''
   })
   emit('getList')

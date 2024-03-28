@@ -2,7 +2,7 @@
   <div class="approve-box">
     <u-sticky bgColor="#fff">
       <div class="approve-search">
-        <uni-search-bar v-model="keyword" placeholder="请输入" radius="20" bgColor="#fff" @confirm="search" />
+        <uni-search-bar v-model="keyword" placeholder="请输入" radius="20" bgColor="#fff" @confirm="search" @cancel="cancel" @clear="cancel"/>
       </div>
       <div class="approve-tab">
         <Tabs
@@ -88,6 +88,11 @@ const tabClick = (item) => {
   status.value = item.id
   totalNum.value = 0
   page.value = 1
+  init()
+}
+const cancel = () => {
+  keyword.value = ''
+  formData.value = []
   init()
 }
 const search = (res) => {

@@ -77,7 +77,13 @@ onMounted(async ()=>{
 
 const getLabList = async () => {
   const res = await getLabAll()
-  objMap.value.LaboratoryId.columns = res as any
+  res.forEach((item)=>{
+    item.Name = '['+item.RoomCode+']'+ item.Name
+  })
+  objMap.value.LaboratoryId.columns = [{
+    Id:'',
+    Name: "所有实验室"
+  }].concat(res) as any
 }
 const getSemList = async () => {
   const res = await getSemesterAll()
@@ -103,7 +109,6 @@ const getWeekList = (val) => {
       }
     ) as any
   }
-  console.log('1111')
   emit('update:ModelValue',formData.value)
 }
 

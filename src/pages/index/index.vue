@@ -54,15 +54,15 @@
             任务提醒
           </div>
           <div class="wake-box">
-            <div class="wake-item">
+            <div class="wake-item" v-for="item in taskList" :key="item.Id">
               <img class="wake-item-icon" :src="WakeUp" alt="">
               <div class="wake-item-text">
                 <div class="wake-item-title clearfix">
-                  <div class="wake-item-title-time">一小时前</div>
-                  值班任务提醒
+                  <div class="wake-item-title-time">{{  formatPast(item.BeginTime.replace('T',' '), "-", false)}}</div>
+                  {{item.Name}}
                 </div>
                 <div class="wake-item-content h-line-2">
-                  {{ellipsis('【411】今日五六节有《大数据库导论课程》请于半个小时内开门【411】今日五六节有《大数据库导论课程》请于半个小时内开门')}}
+                  {{ellipsis(item.Content)}}
                 </div>
               </div>
             </div>
@@ -78,6 +78,8 @@ import { onShow } from '@dcloudio/uni-app';
 import {Banner,IndexBg,SortIcon,WakeUp} from '@/static/icon'
 import { navBarHeight } from '@/utils/navBarUtils';
 import {RoleList} from './constant'
+import { getTodayTasks } from '@/api';
+import {formatPast} from '@/utils/utils.ts'
 
 
 const roleId = ref();
@@ -92,6 +94,7 @@ const list = ref([
 ])
 const current= ref(0)
 const navBg = ref(false)
+const taskList = ref([])
 
 onShow(() => {
   const token = uni.getStorageSync('token') || '';
@@ -106,8 +109,15 @@ onShow(() => {
     })
   }else{
     init()
+    getTaskList()
   }
 });
+
+const getTaskList = async () => {
+  const res = await getTodayTasks()
+  console.log('res1111',res)
+  taskList.value = [res[0]]
+}
 
 const init = async () => {
   const res = await navBarHeight()

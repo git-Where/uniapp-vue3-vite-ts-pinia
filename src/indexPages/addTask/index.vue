@@ -134,7 +134,7 @@ import { ref } from "vue";
 import Popup from "@/components/Popup/index.vue";
 import WeeksPopup from "./component/WeeksPopup/index.vue";
 import HoursPopup from "./component/HoursPopup/index.vue";
-import { addOvertimeTasks, getSemesterAll, getStudentList } from '@/api';
+import { addOvertimeTasks, getAdminList, getSemesterAll, getStudentList } from '@/api';
 import { formatDate, getWeeks } from '@/utils/utils';
 
 const userInfo = uni.getStorageSync('userInfo') || {};
@@ -257,7 +257,11 @@ let semesterParams = []
 let studentParams = []
 onShow(async ()=>{
   getSemester()
-  getStudent()
+  if(userInfo.Role_Id === 5){ // 管理员
+    getAdmin()
+  }else{
+    getStudent()
+  }
 })
 const getSemester = () => {
   getSemesterAll().then(res=>{
@@ -270,6 +274,10 @@ const getStudent = async () => {
     pagesize:1000
   })
   studentParams = studentRes.data
+}
+const getAdmin = async () => {
+  const adminRes = await getAdminList()
+  studentParams = adminRes
 }
 
 const columns:any = ref([]);
