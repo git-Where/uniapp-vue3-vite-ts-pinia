@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { setUserInfo } from '@/api';
+import { getUserInfo, setUserInfo } from '@/api';
 import {PersonSubmit} from '@/static/icon'
 import { ref } from "vue";
 
@@ -99,20 +99,36 @@ onLoad(()=>{
     formModel.value.Signature = data.current
     formModel.value.SignatureName = '已签'
 	})
-
+  init()
   const userInfo = uni.getStorageSync('userInfo') || {};
   formModel.value.Id = userInfo.Id
 })
+
+const init = async () => {
+  const res = await getUserInfo()
+  uni.setStorageSync('userInfo',res)
+  const {Id='',EMAIL='',NickName='',Signature=''} = res
+  formModel.value = {
+    ...formModel.value,
+    EMAIL,
+    NickName,
+    Id,
+    Signature,
+    SignatureName:Signature?'已签':''
+  }
+}
 
 const submit = () => {
   form.value
     .validate()
     .then(async (res) => {
       console.log("校验通过", res);
-      const {Signature,NickName,EMAIL} = formModel.value
+      const {Signature,NickName,EMAIL,Id} = formModel.value
       await setUserInfo({
-        Signature,NickName,EMAIL
+        Signature,NickName,EMAIL,Id
       })
+      const userInfos = uni.getStorageSync('userInfo') || {};
+      uni.setStorageSync('userInfo',{...userInfos,NickName,EMAIL,Signature})
       uni.navigateBack({
         delta:1
       })

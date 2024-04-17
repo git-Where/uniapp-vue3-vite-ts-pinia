@@ -29,8 +29,8 @@
             class="date-time"
           >
             <div style="text-align: right;">
-              <span class="inline-input" @click="handleTime('beginTime')" :style="{color:formData.beginTime?'#303133':'#b9b7b7'}">{{formData.beginTime || '请选择预约开始时间'}}</span>
-              <span class="inline-input">-</span>
+              <span class="inline-input" @click="handleTime('beginTime')" :style="{marginBottom: '10rpx',color:formData.beginTime?'#303133':'#b9b7b7'}">{{formData.beginTime || '请选择预约开始时间'}}</span>
+              <!-- <span class="inline-input">-</span> -->
               <span class="inline-input" @click="handleTime('endTime')" :style="{color:formData.endTime?'#303133':'#b9b7b7'}">{{formData.endTime || '请选择预约结束时间'}}</span>
             </div>
             <template #right>
@@ -154,7 +154,7 @@ defineExpose({
 
 <style  lang="scss">
 .inline-input {
-  display: contents;
+  display: block;
   text-align: right;
   font-size: 15px;
 }

@@ -3,7 +3,7 @@
   <view class="content">
     <img class="index-bg" :src="IndexBg" alt="">
     <div class="index-box" :style="{marginTop:-(370-statusHeight)+'rpx'}">
-      <div class="index-title" :style="{height:navigationBarHeight*2+'rpx',lineHeight:navigationBarHeight*2+'rpx'}">我的</div>
+      <div class="index-title" :style="{height:navigationBarHeight*2+'rpx',lineHeight:navigationBarHeight*2+'rpx'}">个人中心</div>
     </div>
     <div class="my-content">
       <div class="my-info">
@@ -21,7 +21,7 @@
         <div class="my-content-item" @click="goMyNews('../../userPages/myNews/index')">
           <img class="my-content-item-icon" :src="InfoIcon" alt="" />
           <div class="my-content-item-title">
-            <up-badge numberType="overflow" type="error" :style="{top: '20rpx',left:'100rpx'}" absolute showZero :value="badgeNum"/>消息
+            <up-badge v-if="badgeNum > 0" numberType="overflow" type="error" :style="{top: '20rpx',left:'100rpx'}" absolute showZero :value="badgeNum"/>消息
           </div>
         </div>
         <div class="my-content-item" @click="handleSignOut">
@@ -91,7 +91,8 @@ page {
   }
   .index-title {
     text-align: center;
-    font-size: 26rpx;
+    font-weight: 500;
+    font-size: 32rpx;
     color: #fff;
   }
   .my-content {

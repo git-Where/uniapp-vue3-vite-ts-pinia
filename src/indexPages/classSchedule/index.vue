@@ -1,13 +1,15 @@
 <template>
   <div class="class-schedule">
+    <div class="search-item clearfix" @click="pick()">
+      <span class="search-item-title">{{ LaboratoryIdName || '请选择' }}</span>
+      <u-icon name="arrow-down"></u-icon>
+    </div>
     <div class="class-item" v-for="(item,index) in list" :key="index">
       <div class="class-item-left">
         <img class="class-item-img" :src="imgBaseUrl+item.imgUrl" />
       </div>
       <div class="class-item-content">
         <div class="class-item-title clearfix">
-
-
           {{item.SceneName}}
         </div>
         <div class="class-item-status">
@@ -40,12 +42,12 @@
   <Popup ref="popupRef" @change="popupChange">
     <template #default>
       <div class="popup-box">
-        <u-checkbox-group
+        <u-radio-group
             v-model="checkboxValue"
             placement="column"
             @change="checkboxChange"
         >
-            <u-checkbox
+            <u-radio
               :customStyle="{marginBottom: '30px'}"
               activeColor="#2D9EFE"
               v-for="(item, index) in labList"
@@ -53,50 +55,45 @@
               :label="'['+item.RoomCode +']' + item.Name"
               :name="item.Id"
             >
-            </u-checkbox>
-        </u-checkbox-group>
+            </u-radio>
+        </u-radio-group>
       </div>
     </template>
   </Popup>
+
+  <u-picker
+    ref="UPick"
+    :show="show"
+    :showToolbar="true"
+    :defaultIndex="defaultIndex"
+    key-name="Name"
+    :close-on-click-overlay="true"
+    :columns="[columns]"
+    @cancel="show = false"
+    @close="show = false"
+    @confirm="confirm"/>
+  <u-modal :show="openShow" title="提醒" showCancelButton @confirm="openConfirm" @cancel="openShow=false" @close="openShow=false" ref="uModal" content="是否确认进行该操作？" :asyncClose="true"></u-modal>
 </template>
 
 <script setup lang="ts">
 import {ClassIcon1,ClassIcon2,ClassIcon3,ClassIcon4,ClassIcon5,ClassIcon6} from '@/static/icon'
 import Popup from '@/components/Popup/index.vue'
-import { getDict, getLabAll, getScene, setSenceEdit, setSenceLabRep } from '@/api';
+import { getDict, getLabAll, getRunSence, getScene, setSenceEdit, setSenceLabRep } from '@/api';
 import {imgBaseUrl} from '@/config/app'
 
 
 const popupRef = ref()
-const SenceId = ref()
-const checkboxValue = ref<any>([]);
+const scenePolicyID = ref()
+// const checkboxValue = ref<any>([]);
+const checkboxValue = ref<any>();
 const labList = ref<any>([])
-const list = ref<any>([
-//   {
-//   icon:ClassIcon1,
-//   name:'上课模式',
-//   details:'触发情景：上课前30分钟'
-// },{
-//   icon:ClassIcon2,
-//   name:'下课模式',
-//   details:'触发情景：上课前30分钟'
-// },{
-//   icon:ClassIcon3,
-//   name:'午休模式',
-//   details:'触发情景：上课前30分钟'
-// },{
-//   icon:ClassIcon4,
-//   name:'放学模式',
-//   details:'触发情景：上课前30分钟'
-// },{
-//   icon:ClassIcon5,
-//   name:'影音模式',
-//   details:'触发情景：上课前30分钟'
-// },{
-//   icon:ClassIcon6,
-//   name:'自定义模式',
-// }
-])
+const list = ref<any>([])
+const openShow = ref(false)
+const show = ref(false)
+const LaboratoryIdName = ref()
+const LaboratoryId = ref()
+const columns = ref([])
+const defaultIndex = ref([0])
 onShow(async ()=>{
   init()
   getLabs()
@@ -105,35 +102,55 @@ onShow(async ()=>{
   })
 })
 
-const init = async () => {
-  const res = await getScene()
+const init = async (LaboratoryId='') => {
+  const res = await getScene({LaboratoryId})
   list.value=res
 }
 const getLabs = async () => {
   const res = await getLabAll()
   labList.value=res
+  res.forEach((item)=>{
+    item.Name = '['+item.RoomCode+']'+ item.Name
+  })
+  columns.value = [{
+    Id:'',
+    Name: "所有实验室"
+  }].concat(res) as any
 }
 const checkboxChange = async (ids) => {
   console.log(ids,'ids')
   checkboxValue.value=ids
 };
 const chooseLab = (itemData:any = []) => {
-  SenceId.value = itemData.Id
+  scenePolicyID.value = itemData.Id
   const ids = itemData?.laboratorys?.map((item:any)=>{
     return item.Id
   })
-  checkboxValue.value = ids
+  // checkboxValue.value = ids
+  checkboxValue.value = ids[0]
   popupRef.value.open('bottom')
 }
 
+const sceneID = ref()
 const rightNow = (item) => {
+  openShow.value = true
+  sceneID.value = item.scenePolicyID
+}
 
+const openConfirm = async () => {
+  await getRunSence({
+    scenePolicyID:sceneID.value
+  })
+  uni.$u.toast('执行成功')
+  openShow.value = false
+  init()
 }
 
 const popupChange = async () => {
   await setSenceLabRep({
-    SenceId:SenceId.value,
-    LabIds:checkboxValue.value.join(',')
+    SenceId:scenePolicyID.value,
+    // LabIds:checkboxValue.value.join(',')
+    LabIds:checkboxValue.value
   })
   uni.$u.toast('设置成功')
   popupRef.value.cancel()
@@ -147,6 +164,22 @@ const switchChange = async (val) => {
   })
   uni.$u.toast('状态设置成功')
   init()
+}
+
+const pick = () => {
+  const index = columns.value.findIndex((item)=>{
+    return item.Id === LaboratoryId.value
+  })
+  defaultIndex.value = [ index > 0 ? index : 0]
+  show.value = true
+}
+
+const confirm = (val) => {
+  LaboratoryId.value = val.value[0].Id
+  LaboratoryIdName.value = val.value[0].Name
+  show.value = false
+  list.value = []
+  init(LaboratoryId.value)
 }
 </script>
 
@@ -260,6 +293,31 @@ page {
   }
   .u-checkbox {
     margin: 10rpx auto;
+  }
+}
+.search-item {
+  display: flex;
+  overflow: hidden;
+  margin: 10rpx;
+  padding-right: 20rpx;
+  border-radius: 10rpx;
+  width: 200rpx;
+  height: 66rpx;
+  background: #fff;
+  line-height: 66rpx;
+  text-overflow: ellipsis;
+  text-align: center;
+  white-space: nowrap;
+  .search-item-title {
+    display: block;
+    overflow: hidden;
+    width: 170rpx;
+    text-overflow: ellipsis;
+    text-align: center;
+    font-weight: 500;
+    font-size: 28rpx;
+    color: #333;
+    white-space: nowrap;
   }
 }
 </style>

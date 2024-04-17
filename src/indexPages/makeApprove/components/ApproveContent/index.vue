@@ -33,14 +33,21 @@
             >
           </div>
           <div class="approve-content-con-item">
-            <span class="approve-content-con-label">申请者</span>
+            <span class="approve-content-con-label">组织者</span>
             <span class="approve-content-con-span"
               >{{item.Organizer}}</span
             >
           </div>
+          <div class="approve-content-con-item">
+            <span class="approve-content-con-label">申请者</span>
+            <span class="approve-content-con-span"
+              >{{item.UserName}}</span
+            >
+          </div>
           <div class="approve-btn-box">
-            <div class="approve-btn-ope" v-if="item.OrderStatus === 1" @click="handleApprove(item)">审核</div>
-            <div class="approve-btn-cancel" v-if="item.OrderStatus === 0" @click="handleCancel(item)">取消</div>
+            <div class="approve-btn-ope" v-if="userInfo.Role_Id === 1 && item.OrderStatus === 1" @click="handleApprove(item)">审核</div>
+            <div class="approve-btn-cancel" @click="handleCancel(item)">取消</div>
+            <!-- <div class="approve-btn-cancel" v-if="item.OrderStatus === 0" @click="handleCancel(item)">取消</div> -->
           </div>
         </div>
       </div>
@@ -87,6 +94,7 @@ const props = defineProps({
     default: () => ([])
   }
 });
+const userInfo = uni.getStorageSync('userInfo') || {};
 const emit = defineEmits('getList')
 const formData = ref(props.modelValue)
 const show = ref(false);
@@ -101,6 +109,7 @@ const handleApprove = (item) => {
 };
 
 const handleCancel = (item) => {
+  textVal.value = ''
   show.value = true;
   approveMap.value = item;
   isApprove.value = false;
@@ -200,6 +209,7 @@ const cancel = async () => {
         color: #fff;
       }
       .approve-btn-cancel {
+        margin-left: 20rpx;
         border: 1px solid #fe6466;
         color: #fe6466;
       }

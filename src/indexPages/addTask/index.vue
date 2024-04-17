@@ -184,7 +184,12 @@ const submit = () => {
         TaskName,Content,UserId,SemesterId,Weeks,Lesson
       })
       uni.navigateBack({
-        delta: 1
+        delta: 1,
+        success: () => {
+          uni.$emit('getName',{
+            current: '1'
+          })
+        }
       });
     })
     .catch((errors) => {

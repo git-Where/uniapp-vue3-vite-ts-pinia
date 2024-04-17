@@ -20,12 +20,17 @@
           {{formModel?.UserName}}
         </u-form-item>
         <u-form-item label="任务安排节次" labelWidth="95" prop="Lesson" borderBottom >
-          {{formModel?.StartLesson}}
+          第{{formModel?.Week}}周的周{{formModel?.WeekDay}} 第{{formModel?.StartLesson}}-{{formModel?.EndLesson}}节次
         </u-form-item>
       </div>
     </u--form>
-    <div class="invite-btn" v-if="userInfo.Role_Id === 1" @click="submit">
-      审核
+    <div class="approve-btn-box">
+      <div class="invite-btn" v-if="userInfo.Role_Id === 1 && overStatus == 0" @click="submit">
+        审核
+      </div>
+      <div class="invite-btn invite-cancel" @click="cancel">
+        取消
+      </div>
     </div>
   </div>
   <u-modal
@@ -50,7 +55,7 @@
       >
           <u-radio
               :customStyle="{marginBottom: '8px'}"
-              v-for="(item, index) in checkboxList"
+              v-for="(item, index) in statusMap"
               :key="index"
               :label="item.name"
               :name="item.id"
@@ -58,7 +63,7 @@
           </u-radio>
       </u-radio-group>
       </div>
-      <div class="approve-cancel-box" >
+      <div class="approve-cancel-box" v-if="status === 2">
         <u--textarea class="approve-cancel-textarea" v-model="CheckErrorLog" placeholder="请输入理由..." ></u--textarea>
       </div>
     </template>
@@ -74,32 +79,25 @@ const formModel = ref();
 const Id = ref()
 const show = ref(false)
 const CheckErrorLog = ref('')
-const checkboxList = ref([
-  {
-    name: '待审核',
-    id:0,
-    disabled: false,
-  },
-  {
-    name: '审核通过',
-    id:1,
-    disabled: false,
-  },
-  {
-    name: '拒绝',
-    id:2,
-    disabled: false,
-  },
-  {
-    name: '取消',
-    id:3,
-    disabled: false,
-  },
-]);
+const statusMap = [
+    {
+      name: '审核通过',
+      id:1,
+      disabled: false,
+    },
+    {
+      name: '拒绝',
+      id:2,
+      disabled: false,
+    }
+  ]
 const status = ref()
 const userInfo = uni.getStorageSync('userInfo') || {};
+const overStatus = ref()
 onLoad((option:any)=>{
   Id.value = option.id
+  overStatus.value = option.status
+  console.log('option',option)
   init(option.id)
 
 })
@@ -113,13 +111,29 @@ const submit = async () => {
   show.value = true
 };
 const confirm = async () => {
+  if(!status.value){
+    return uni.$u.toast("请先选择审核原因");
+  }
+  await operate(status.value)
+}
+const cancel = async () => {
+  await operate(3)
+}
+const operate = async (status) => {
   await checkedOvertimeTask({
     Id:Id.value,
-    status:status.value,
+    status,
     CheckErrorLog:CheckErrorLog.value
   })
   show.value = false
-  uni.navigateBack()
+  uni.navigateBack({
+		delta:1,
+		success: () => {
+			uni.$emit('getName',{
+				current: '1'
+			})
+		}
+	})
 }
 </script>
 
@@ -128,17 +142,24 @@ page {
   height: 100%;
   background-color: $uni-bg-color-grey;
 }
+.approve-btn-box {
+  display: flex;
+  padding: 0 10rpx;
+}
 .invite-btn {
   display: block;
-  margin: 50rpx auto 0;
+  flex: 1;
+  margin: 50rpx 10rpx;
   border-radius: 50rpx;
-  width: 545rpx;
   height: 95rpx;
   background: linear-gradient(90deg, #49b5fa, #2f74ff);
   line-height: 95rpx;
   text-align: center;
   font-size: 36rpx;
   color: #fff;
+  &.invite-cancel {
+    background: linear-gradient(90deg, #f36e6e, #f44848);
+  }
 }
 .form-activity {
   border-radius: 30rpx;

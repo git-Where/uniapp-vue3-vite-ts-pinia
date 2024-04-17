@@ -20,7 +20,7 @@
               >{{ statusMap[item.status] }}</span
             >
           </div>
-          <div class="approve-content-con-item" @click="handleDetails(item.Id)">
+          <div class="approve-content-con-item" @click="handleDetails(item)">
             <div class="view-details">查看详情</div>
           </div>
         </div>
@@ -46,9 +46,9 @@ const statusMap = {
   3:'已取消',
 }
 
-const handleDetails = (id) => {
+const handleDetails = (item) => {
   uni.navigateTo({
-    url:`/indexPages/overtimeApprovalDetails/index?id=${id}`
+    url:`/indexPages/overtimeApprovalDetails/index?id=${item.Id}&status=${item.status}`
   })
 }
 </script>

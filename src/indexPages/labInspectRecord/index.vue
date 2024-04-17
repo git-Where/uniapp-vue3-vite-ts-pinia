@@ -27,7 +27,7 @@
           </div>
           <div class="labs-content-con">
             <div class="labs-content-con-item">
-              <span class="labs-content-con-label"> 巡检教室</span>
+              <span class="labs-content-con-label">巡检教室</span>
               <span class="labs-content-con-span"
                 >{{item.Begins}}</span
               >

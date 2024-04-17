@@ -4,6 +4,7 @@
     :lineWidth="lineWidth"
     :lineHeight="lineHeight"
     :scrollable="scrollable"
+    :current="current"
     :activeStyle="{
       'font-weight': 'bold',
       'text-shadow': '0rpx 23rpx 27rpx rgba(59,147,253,0.11)',
@@ -74,6 +75,10 @@ const props = defineProps({
   lineHeight:{
     type:Number,
     default:2
+  },
+  current:{
+    type:Number,
+    default:0
   }
 })
 const emit = defineEmits<{

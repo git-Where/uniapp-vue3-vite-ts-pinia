@@ -19,7 +19,7 @@
         <u-divider textColor="#999999"
         lineColor="#999999" text="历史邀约记录"></u-divider>
       </div>
-      <InviteContent  v-model="formData" @getList="init"/>
+      <InviteContent  v-model="formData" @getList="getDataList"/>
       <div v-if="totalNum !== formData.length" class="load-more" @click="more">点击加载更多</div>
       <div v-else class="load-more">到底了</div>
     </scroll-view>
@@ -53,6 +53,11 @@ const init = async () => {
   statusHeight.value = res.statusHeight*2
   navigationBarHeight.value = res.navigationBarHeight
 
+  getList()
+}
+
+const getDataList = async () =>{
+  formData.value = []
   getList()
 }
 const getList = async () => {

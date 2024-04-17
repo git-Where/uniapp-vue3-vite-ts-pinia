@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import {getLabAll,getSemesterAll} from '@/api'
-import { formatDate, getCurrentDate, getWeeks } from "@/utils/utils";
+import { formatDate, getCurrentDate, getWeeks,isDateInRange } from "@/utils/utils";
 
 const props = defineProps({
   modelValue: {
@@ -90,6 +90,7 @@ const getSemList = async () => {
   objMap.value.SemesterId.columns = res as any
   formData.value.SemesterId = res[0].Id as any
   formData.value.SemesterIdName = res[0].Name as any
+  console.log('res[0]',res[0])
   getWeekList(res[0])
 }
 const getWeekList = (val) => {
@@ -97,7 +98,11 @@ const getWeekList = (val) => {
   const endTime = formatDate(val.End_Date).split(' ')[0]
   const weeks = getWeeks(beginTime,endTime)+1 // 总共有几周时间
   const currentDate = getCurrentDate()// 获取当前时间年月日
-  const current = getWeeks(beginTime,currentDate)+1 // 计算当前时间在这个周期内属于第几周
+  let current = getWeeks(beginTime,currentDate)+1 // 计算当前时间在这个周期内属于第几周
+  const isBettwen = isDateInRange(beginTime,endTime)
+  if(!isBettwen){
+    current = 1
+  }
   console.log('周数：',beginTime,endTime,currentDate,weeks,current || 1)
   formData.value.weeksName = `第${current || 1}周`
   formData.value.weeks = current || 1
@@ -123,9 +128,17 @@ const pick = (val) => {
 }
 
 const confirm = (val) => {
+  if(searchType.value === 'SemesterId'){
+    const obj = objMap.value.SemesterId.columns.find((item)=>{
+      return item.Id === val.value[0].Id
+    })
+    objMap.value.weeks.columns = []
+    getWeekList(obj)
+  }else{
+    emit('update:ModelValue',formData.value)
+  }
   formData.value[searchType.value] = val.value[0].Id
   formData.value[searchType.value+'Name'] = val.value[0].Name
-  emit('update:ModelValue',formData.value)
   show.value = false
 }
 const changeHandler = (e) => {

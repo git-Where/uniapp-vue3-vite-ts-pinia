@@ -212,7 +212,16 @@ export const getCurrentDate = () => {
   const month = currentDate.getMonth() + 1; // 月份是从 0 开始计数的，因此要加1
 
   const day = currentDate.getDate();
-  return `${year}-${month<9 ? '0' + month : month}-${day}`
+  return `${year}-${month<9 ? '0' + month : month}-${day<9 ? '0' + day : day}`
+}
+// 获取当前年月日往后一个月
+export const getCurrentDateToMonth = () => {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1+1; // 月份是从 0 开始计数的，因此要加1
+
+  const day = currentDate.getDate();
+  return `${year}-${month<9 ? '0' + month : month}-${day<9 ? '0' + day : day}`
 }
 
 export const getCurrentYearMonth = () => {
@@ -227,8 +236,9 @@ export const formatPast = (date, type = "default", zeroFillFlag = true) => {
   let countTime;
   // 获取当前时间戳
   let time = new Date().getTime();
+  const dataFormatter = date.replaceAll('-','/')
   // 转换传入参数为时间戳
-  let afferentTime = new Date(date).getTime();
+  let afferentTime = new Date(dataFormatter).getTime();
   // 当前时间戳 - 传入时间戳
   time = Number.parseInt(`${time - afferentTime}`);
   if (time < 10000) {

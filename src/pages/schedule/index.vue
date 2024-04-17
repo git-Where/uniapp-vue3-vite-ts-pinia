@@ -3,7 +3,7 @@
     <u-sticky bgColor="#fff">
       <Search :model-value="formData" @update:ModelValue="updateModelValue"/>
       <div class="search-day" v-if="tabList.length > 0">
-        <Tabs :tab-list="tabList" :line-height="3" :line-width="80" @tab-change="tabClick" />
+        <Tabs :tab-list="tabList" :line-height="3" :current="currentWeek-1" :line-width="80" @tab-change="tabClick" />
       </div>
     </u-sticky>
     <Content v-model="classList"/>
@@ -29,7 +29,16 @@ const formData = ref({
 })
 const classList = ref()
 const tabList = ref<any>([]);
-const listMap = ref({})
+const currentWeek = ref(0)
+const listMap = ref({
+  '周一':[],
+  '周二':[],
+  '周三':[],
+  '周四':[],
+  '周五':[],
+  '周六':[],
+  '周日':[]
+})
 onLoad(async (options:any)=>{
   formData.value.IsSearchMine = options.IsSearchMine || '0'
   formData.value.IsSearchMineName = options.IsSearchMine == 1 ? '本人课程' : '所有课程'
@@ -51,7 +60,15 @@ const getList = async (val) => {
     uni.setStorageSync('data',res.data)
   }else{
     tabList.value = []
-    listMap.value = []
+    listMap.value = {
+      '周一':[],
+      '周二':[],
+      '周三':[],
+      '周四':[],
+      '周五':[],
+      '周六':[],
+      '周日':[]
+    }
     classList.value = {}
   }
 }
@@ -69,18 +86,29 @@ const setData = ({TeacherName,StartLesson,EndLesson,WeekDay,CourseName,Laborator
      * **/
     if(((StartLesson <= startTime && startTime <= EndLesson) && StartLesson <= endTime && endTime <= EndLesson) ||
     startTime === StartLesson || startTime === EndLesson || endTime === StartLesson || endTime === EndLesson){
-      const index = listMap.value[WeekDay].findIndex((item)=> {
-        return (item.StartLesson === startTime && item.EndLesson === endTime)
-      })
-      if(index >= 0){ // 节次信息已经有存在,就不在重新赋值节次信息
-        if(!Array.isArray(listMap.value?.[WeekDay]?.[index]?.classList)){
-          listMap.value[WeekDay][index].classList = []
-        }
-        listMap.value?.[WeekDay]?.[index]?.classList?.push({
-          CourseName,TeacherName,LaboratoryName,ActivityId,ActivityName,Teacher
+      const index = listMap.value[WeekDay]?.length
+      if(index > 0){
+        const indexNum = listMap.value[WeekDay]?.findIndex((item)=> {
+          return (item.StartLesson === startTime && item.EndLesson === endTime)
         })
+        if(indexNum >=0){ // 节次信息已经有存在,就不在重新赋值节次信息
+          if(!Array.isArray(listMap.value?.[WeekDay]?.[indexNum]?.classList)){
+            listMap.value[WeekDay][indexNum].classList = []
+          }
+          listMap.value?.[WeekDay]?.[indexNum]?.classList?.push({
+            CourseName,TeacherName,LaboratoryName,ActivityId,ActivityName,Teacher
+          })
+        }else{
+          listMap.value[WeekDay]?.push({
+            StartLesson:startTime,
+            EndLesson:endTime,
+            classList:[{
+              CourseName,TeacherName,LaboratoryName,ActivityId,ActivityName,Teacher
+            }]
+          })
+        }
       }else{
-        listMap.value[WeekDay].push({
+        listMap.value[WeekDay]?.push({
           StartLesson:startTime,
           EndLesson:endTime,
           classList:[{
@@ -95,9 +123,9 @@ const formatterData = (data) => {
   data.forEach((item)=>{
     const {WeekDay,TeacherName,CourseName} = item
     // if(!TeacherName || !CourseName)return
-    if(!Object.keys(listMap.value).includes(WeekDay)){ // 星期的数据不存在
-      listMap.value[WeekDay] = []
-    }
+    // if(!Object.keys(listMap.value).includes(WeekDay)){ // 星期的数据不存在
+    //   listMap.value[WeekDay] = []
+    // }
     setData(item)
   })
   Object.entries(listMap.value).forEach(([key, value]) => {
@@ -112,8 +140,18 @@ const formatterData = (data) => {
     })
   });
   tabList.value.sort(compareChineseNumber)
-
-  classList.value = listMap.value[tabList.value[0].name]
+  currentWeek.value = new Date().getDay()
+  // classList.value = listMap.value?.[tabList.value?.[0]?.name]
+  const chineseToArabic = {
+    "1": "一",
+    "2": "二",
+    "3": "三",
+    "4": "四",
+    "5": "五",
+    "6": "六",
+    "7": "日",
+  };
+  classList.value = listMap.value?.['周'+chineseToArabic[currentWeek.value]]
   console.log('list.value',listMap.value,classList.value)
 }
 const compareChineseNumber = (a, b) => {
@@ -133,10 +171,17 @@ const compareChineseNumber = (a, b) => {
 }
 
 const updateModelValue = (val) => {
-  listMap.value = {}
+  listMap.value = {
+      '周一':[],
+      '周二':[],
+      '周三':[],
+      '周四':[],
+      '周五':[],
+      '周六':[],
+      '周日':[]
+    }
   tabList.value = []
   val.weeks && getList(val)
-
 }
 
 // watch(()=>formData.value,(val)=>{

@@ -25,7 +25,7 @@
           height: '94rpx'
         }"
         @tab-change="tabClick" />
-      <InviteContent v-model="formData" @getList="getList"/>
+      <InviteContent v-model="formData" @getList="getDataList"/>
       <div v-if="totalNum !== formData.length" class="load-more" @click="more">点击加载更多</div>
       <div v-else class="load-more">到底了</div>
     </scroll-view>
@@ -71,13 +71,6 @@ const page = ref(1)
 const status = ref(1)
 const formData = ref([])
 const totalNum = ref(0)
-const tabClick = (item) => {
-  formData.value = []
-  status.value = item.id
-  totalNum.value = 0
-  page.value = 1
-  getList()
-}
 const fetchApi = {
   2:{
     fetch:getBusinessMyList
@@ -97,13 +90,26 @@ const fetchApi = {
 }
 let fetchConfig = null
 onShow(() => {
+  formData.value = []
+  totalNum.value = 0
+  page.value = 1
   const userInfo = uni.getStorageSync('userInfo') || {};
   fetchConfig = fetchApi[userInfo.Role_Id]
   init()
   getList()
-
 });
 
+const tabClick = (item) => {
+  formData.value = []
+  status.value = item.id
+  totalNum.value = 0
+  page.value = 1
+  getList()
+}
+const getDataList = () =>{
+  formData.value = []
+  getList()
+}
 const init = async () => {
   const res = await navBarHeight()
   statusHeight.value = res.statusHeight*2

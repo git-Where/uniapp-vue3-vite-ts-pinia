@@ -23,8 +23,8 @@
             <text class="grid-text">当日实验人数</text>
           </u-grid-item>
           <u-grid-item>
-            <div class="condition-item">
-              <div class="condition-item-num">{{formData?.dutyMember }}</div>
+            <div class="condition-item" @click="getDutyMember">
+              <div class="condition-item-num h-line-1">{{formData?.dutyMember }}</div>
             </div>
             <text class="grid-text">开关门值班学生</text>
           </u-grid-item>
@@ -68,6 +68,7 @@
     </view>
   </u-modal>
   <u-modal :show="openShow" title="提醒" showCancelButton @confirm="openConfirm" @cancel="openShow=false" @close="openShow=false" ref="uModal" content="是否确认进行该操作？" :asyncClose="true"></u-modal>
+  <u-modal :show="memberShow" title="信息" :content='formData?.dutyMember' @confirm="memberShow = false"/>
 </template>
 
 <script setup lang="ts">
@@ -90,6 +91,8 @@ const IsAbnormalMap = ref({
 })
 const show=ref(false)
 const showContent=ref('')
+
+const memberShow = ref(false)
 
 onShow(() => {
   init()
@@ -120,6 +123,10 @@ const handleStatus = (row) => {
   if(!row.IsAbnormal)return
   show.value = true
   showContent.value = row.abnormalCause
+}
+
+const getDutyMember = () => {
+  memberShow.value = true
 }
 </script>
 
@@ -152,6 +159,7 @@ page {
     padding: 20rpx 0 30rpx;
   }
   .condition-item-icon {
+    margin: 0 auto;
     margin-bottom: 15rpx;
     width: 102rpx;
     height: 102rpx;
@@ -180,8 +188,13 @@ page {
     font-size: 30rpx;
     color: #333;
   }
+  .condition-item {
+    overflow: hidden;
+    width: 100%;
+  }
   .condition-item-num {
     margin-bottom: 15rpx;
+    padding: 0 10rpx;
     height: 102rpx;
     line-height: 102rpx;
     font-weight: 500;

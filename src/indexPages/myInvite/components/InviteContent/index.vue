@@ -35,7 +35,7 @@
           <div class="approve-btn-box">
             <div class="approve-btn-ope" v-if="userInfo.Role_Id === 1 && item.OrderStatus === 1" @click="handleApprove(item)">审核</div>
             <!-- <div class="approve-btn-cancel" v-if="item.OrderStatus === 1" @click="handleCancel(item)">取消</div> -->
-            <div class="approve-btn-cancel" @click="handleCancel(item)">取消</div>
+            <div class="approve-btn-cancel" v-if="item.OrderStatus !== 2" @click="handleCancel(item)">取消</div>
           </div>
         </div>
       </div>

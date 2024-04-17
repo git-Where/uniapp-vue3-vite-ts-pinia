@@ -47,22 +47,22 @@
           </div>
         </div>
       </div>
-      <div class="sort-box" v-if="roleId === 5">
+      <div class="sort-box" v-if="roleId === 5 && taskList.length > 0">
         <div class="sort-item">
           <div class="sort-item-title">
             <img class="sort-icon" :src="SortIcon" alt="">
             任务提醒
           </div>
           <div class="wake-box">
-            <div class="wake-item" v-for="item in taskList" :key="item.Id">
+            <div class="wake-item" v-for="item in taskList" :key="item?.Id">
               <img class="wake-item-icon" :src="WakeUp" alt="">
               <div class="wake-item-text">
                 <div class="wake-item-title clearfix">
-                  <div class="wake-item-title-time">{{  formatPast(item.BeginTime.replace('T',' '), "-", false)}}</div>
-                  {{item.Name}}
+                  <div class="wake-item-title-time">{{formatPast(item?.BeginTime?.replace('T',' '), "-", false) || ''}}</div>
+                  {{item?.Name}}
                 </div>
                 <div class="wake-item-content h-line-2">
-                  {{ellipsis(item.Content)}}
+                  {{ellipsis(item?.Content)}}
                 </div>
               </div>
             </div>
@@ -116,7 +116,7 @@ onShow(() => {
 const getTaskList = async () => {
   const res = await getTodayTasks()
   console.log('res1111',res)
-  taskList.value = [res[0]]
+  taskList.value = res?.length > 0 ?  [res[0]] : []
 }
 
 const init = async () => {
@@ -139,7 +139,7 @@ const jump = (item) => {
 }
 
 const ellipsis = (val) => {
-  if(val.length > 45){
+  if(val?.length > 45){
     return val.slice(0,45)+'...'
   }
   return val
@@ -179,7 +179,8 @@ page {
   }
   .index-title {
     text-align: center;
-    font-size: 26rpx;
+    font-weight: 500;
+    font-size: 32rpx;
     color: #fff;
   }
   .banner-swiper {
